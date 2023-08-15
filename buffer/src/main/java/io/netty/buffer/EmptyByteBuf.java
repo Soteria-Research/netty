@@ -33,6 +33,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
+import jdk.internal.vm.memory.MemoryAddress;
 
 /**
  * An empty {@link ByteBuf} whose capacity and maximum capacity are all {@code 0}.
@@ -41,10 +42,10 @@ public final class EmptyByteBuf extends ByteBuf {
 
     static final int EMPTY_BYTE_BUF_HASH_CODE = 1;
     private static final ByteBuffer EMPTY_BYTE_BUFFER = ByteBuffer.allocateDirect(0);
-    private static final long EMPTY_BYTE_BUFFER_ADDRESS;
+    private static final MemoryAddress EMPTY_BYTE_BUFFER_ADDRESS;
 
     static {
-        long emptyByteBufferAddress = 0;
+        MemoryAddress emptyByteBufferAddress = null;
         try {
             if (PlatformDependent.hasUnsafe()) {
                 emptyByteBufferAddress = PlatformDependent.directBufferAddress(EMPTY_BYTE_BUFFER);
@@ -944,11 +945,11 @@ public final class EmptyByteBuf extends ByteBuf {
 
     @Override
     public boolean hasMemoryAddress() {
-        return EMPTY_BYTE_BUFFER_ADDRESS != 0;
+        return !(MemoryAddress.isNull(EMPTY_BYTE_BUFFER_ADDRESS));
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         if (hasMemoryAddress()) {
             return EMPTY_BYTE_BUFFER_ADDRESS;
         } else {

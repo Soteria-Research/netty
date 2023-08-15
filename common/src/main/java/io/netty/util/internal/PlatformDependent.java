@@ -440,15 +440,15 @@ public final class PlatformDependent {
         return ADDRESS_SIZE;
     }
 
-    public static long allocateMemory(long size) {
+    public static MemoryAddress allocateMemory(long size) {
         return PlatformDependent0.allocateMemory(size);
     }
 
-    public static void freeMemory(long address) {
+    public static void freeMemory(MemoryAddress address) {
         PlatformDependent0.freeMemory(address);
     }
 
-    public static long reallocateMemory(long address, long newSize) {
+    public static MemoryAddress reallocateMemory(MemoryAddress address, MemoryAddress newSize) {
         return PlatformDependent0.reallocateMemory(address, newSize);
     }
 
@@ -523,7 +523,7 @@ public final class PlatformDependent {
         CLEANER.freeDirectBuffer(buffer);
     }
 
-    public static long directBufferAddress(ByteBuffer buffer) {
+    public static MemoryAddress directBufferAddress(ByteBuffer buffer) {
         return PlatformDependent0.directBufferAddress(buffer);
     }
 
@@ -739,29 +739,21 @@ public final class PlatformDependent {
         return PlatformDependent0.objectFieldOffset(field);
     }
 
-    public static void copyMemory(long srcAddr, long dstAddr, long length) {
-        PlatformDependent0.copyMemory(srcAddr, dstAddr, length);
-    }
-
-    public static void copyMemory(byte[] src, int srcIndex, long dstAddr, long length) {
-        PlatformDependent0.copyMemory(src, BYTE_ARRAY_BASE_OFFSET + srcIndex, null, dstAddr, length);
-    }
-
     public static void copyMemory(byte[] src, int srcIndex, byte[] dst, int dstIndex, long length) {
         PlatformDependent0.copyMemory(src, BYTE_ARRAY_BASE_OFFSET + srcIndex,
                                       dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
     }
 
-    public static void copyMemory(long srcAddr, byte[] dst, int dstIndex, long length) {
-        PlatformDependent0.copyMemory(null, srcAddr, dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
+    public static void copyMemory(MemoryAddress src, MemoryAddress dst, long length) {
+        PlatformDependent0.copyMemory(src, 0, dst, 0, length);
     }
 
     public static void setMemory(byte[] dst, int dstIndex, long bytes, byte value) {
         PlatformDependent0.setMemory(dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, bytes, value);
     }
 
-    public static void setMemory(long address, long bytes, byte value) {
-        PlatformDependent0.setMemory(address, bytes, value);
+    public static void setMemory(MemoryAddress dst, long bytes, byte value) {
+        PlatformDependent0.setMemory(dst, 0, bytes, value);
     }
 
     /**

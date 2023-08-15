@@ -27,6 +27,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import jdk.internal.vm.memory.MemoryAddress;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
@@ -37,7 +38,8 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 final class PlatformDependent0 {
 
     private static final InternalLogger logger = InternalLoggerFactory.getInstance(PlatformDependent0.class);
-    private static final long ADDRESS_FIELD_OFFSET;
+    // MOJO - offset for the memoryAddress field of a Buffer
+    private static final long MEMORY_ADDRESS_FIELD_OFFSET;
     private static final long BYTE_ARRAY_BASE_OFFSET;
     private static final long INT_ARRAY_BASE_OFFSET;
     private static final long INT_ARRAY_INDEX_SCALE;
@@ -78,7 +80,7 @@ final class PlatformDependent0 {
 
     static {
         final ByteBuffer direct;
-        Field addressField = null;
+        Field memoryAddressField = null;
         Method allocateArrayMethod = null;
         Throwable unsafeUnavailabilityCause = null;
         Unsafe unsafe;
@@ -86,7 +88,7 @@ final class PlatformDependent0 {
         boolean storeFenceAvailable = false;
         if ((unsafeUnavailabilityCause = EXPLICIT_NO_UNSAFE_CAUSE) != null) {
             direct = null;
-            addressField = null;
+            memoryAddressField = null;
             unsafe = null;
             internalUnsafe = null;
         } else {
@@ -207,19 +209,19 @@ final class PlatformDependent0 {
             if (unsafe != null) {
                 final Unsafe finalUnsafe = unsafe;
 
-                // attempt to access field Buffer#address
+                // attempt to access field Buffer#memoryAddress
                 final Object maybeAddressField = AccessController.doPrivileged(new PrivilegedAction<Object>() {
                     @Override
                     public Object run() {
                         try {
-                            final Field field = Buffer.class.getDeclaredField("address");
+                            final Field field = Buffer.class.getDeclaredField("memoryAddress");
                             // Use Unsafe to read value of the address field. This way it will not fail on JDK9+ which
                             // will forbid changing the access level via reflection.
                             final long offset = finalUnsafe.objectFieldOffset(field);
-                            final long address = finalUnsafe.getLong(direct, offset);
+                            final MemoryAddress memoryAddress = (MemoryAddress) finalUnsafe.getObject(direct, offset);
 
-                            // if direct really is a direct buffer, address will be non-zero
-                            if (address == 0) {
+                            // if direct really is a direct buffer, the neither the MemoryAddress object or the pointer it wraps will be null
+                            if (MemoryAddress.isNull(memoryAddress)) {
                                 return null;
                             }
                             return field;
@@ -232,14 +234,14 @@ final class PlatformDependent0 {
                 });
 
                 if (maybeAddressField instanceof Field) {
-                    addressField = (Field) maybeAddressField;
-                    logger.debug("java.nio.Buffer.address: available");
+                    memoryAddressField = (Field) maybeAddressField;
+                    logger.debug("java.nio.Buffer.memoryAddress: available");
                 } else {
                     unsafeUnavailabilityCause = (Throwable) maybeAddressField;
                     if (logger.isTraceEnabled()) {
-                        logger.debug("java.nio.Buffer.address: unavailable", (Throwable) maybeAddressField);
+                        logger.debug("java.nio.Buffer.memoryAddress: unavailable", (Throwable) maybeAddressField);
                     } else {
-                        logger.debug("java.nio.Buffer.address: unavailable: {}",
+                        logger.debug("java.nio.Buffer.memoryAddress: unavailable: {}",
                                 ((Throwable) maybeAddressField).getMessage());
                     }
 
@@ -264,7 +266,7 @@ final class PlatformDependent0 {
         UNSAFE = unsafe;
 
         if (unsafe == null) {
-            ADDRESS_FIELD_OFFSET = -1;
+            MEMORY_ADDRESS_FIELD_OFFSET = -1;
             BYTE_ARRAY_BASE_OFFSET = -1;
             LONG_ARRAY_BASE_OFFSET = -1;
             LONG_ARRAY_INDEX_SCALE = -1;
@@ -276,16 +278,17 @@ final class PlatformDependent0 {
             STORE_FENCE_AVAILABLE = false;
         } else {
             Constructor<?> directBufferConstructor;
-            long address = -1;
+            MemoryAddress address = null;
             try {
                 final Object maybeDirectBufferConstructor =
                         AccessController.doPrivileged(new PrivilegedAction<Object>() {
                             @Override
                             public Object run() {
                                 try {
-                                    final Constructor<?> constructor = javaVersion() >= 21 ?
-                                            direct.getClass().getDeclaredConstructor(long.class, long.class) :
-                                            direct.getClass().getDeclaredConstructor(long.class, int.class);
+                                    // MOJO - fetching the constructor "private Direct$Type$Buffer(MemoryAddress addr, int cap)"
+                                    //        from src/java.base/share/classes/java/nio/Direct-X-Buffer.java.template
+                                    final Constructor<?> constructor =
+                                            direct.getClass().getDeclaredConstructor(MemoryAddress.class, int.class);
                                     Throwable cause = ReflectionUtil.trySetAccessible(constructor, true);
                                     if (cause != null) {
                                         return cause;
@@ -300,7 +303,7 @@ final class PlatformDependent0 {
                         });
 
                 if (maybeDirectBufferConstructor instanceof Constructor<?>) {
-                    address = UNSAFE.allocateMemory(1);
+                    address = UNSAFE.allocateMemoryObject(1);
                     // try to use the constructor now
                     try {
                         ((Constructor<?>) maybeDirectBufferConstructor).newInstance(address, 1);
@@ -324,12 +327,12 @@ final class PlatformDependent0 {
                     directBufferConstructor = null;
                 }
             } finally {
-                if (address != -1) {
+                if (address != null) {
                     UNSAFE.freeMemory(address);
                 }
             }
             DIRECT_BUFFER_CONSTRUCTOR = directBufferConstructor;
-            ADDRESS_FIELD_OFFSET = objectFieldOffset(addressField);
+            MEMORY_ADDRESS_FIELD_OFFSET = objectFieldOffset(memoryAddressField);
             BYTE_ARRAY_BASE_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
             INT_ARRAY_BASE_OFFSET = UNSAFE.arrayBaseOffset(int[].class);
             INT_ARRAY_INDEX_SCALE = UNSAFE.arrayIndexScale(int[].class);
@@ -480,7 +483,7 @@ final class PlatformDependent0 {
 
         INTERNAL_UNSAFE = internalUnsafe;
 
-        logger.debug("java.nio.DirectByteBuffer.<init>(long, {int,long}): {}",
+        logger.debug("java.nio.DirectByteBuffer.<init>(MemoryAddress, {int,long}): {}",
                 DIRECT_BUFFER_CONSTRUCTOR != null ? "available" : "unavailable");
     }
 
@@ -544,14 +547,14 @@ final class PlatformDependent0 {
     }
 
     static ByteBuffer reallocateDirectNoCleaner(ByteBuffer buffer, int capacity) {
-        return newDirectBuffer(UNSAFE.reallocateMemory(directBufferAddress(buffer), capacity), capacity);
+        return newDirectBuffer(UNSAFE.reallocateMemoryObject(directBufferAddress(buffer), capacity), capacity);
     }
 
     static ByteBuffer allocateDirectNoCleaner(int capacity) {
         // Calling malloc with capacity of 0 may return a null ptr or a memory address that can be used.
         // Just use 1 to make it safe to use in all cases:
         // See: https://pubs.opengroup.org/onlinepubs/009695399/functions/malloc.html
-        return newDirectBuffer(UNSAFE.allocateMemory(Math.max(1, capacity)), capacity);
+        return newDirectBuffer(UNSAFE.allocateMemoryObject(Math.max(1, capacity)), capacity);
     }
 
     static boolean hasAlignSliceMethod() {
@@ -582,7 +585,7 @@ final class PlatformDependent0 {
         }
     }
 
-    static ByteBuffer newDirectBuffer(long address, int capacity) {
+    static ByteBuffer newDirectBuffer(MemoryAddress address, int capacity) {
         ObjectUtil.checkPositiveOrZero(capacity, "capacity");
 
         try {
@@ -596,8 +599,8 @@ final class PlatformDependent0 {
         }
     }
 
-    static long directBufferAddress(ByteBuffer buffer) {
-        return getLong(buffer, ADDRESS_FIELD_OFFSET);
+    static MemoryAddress directBufferAddress(ByteBuffer buffer) {
+        return getMemoryAddress(buffer, MEMORY_ADDRESS_FIELD_OFFSET);
     }
 
     static long byteArrayBaseOffset() {
@@ -623,6 +626,10 @@ final class PlatformDependent0 {
 
     private static long getLong(Object object, long fieldOffset) {
         return UNSAFE.getLong(object, fieldOffset);
+    }
+
+    private static MemoryAddress getMemoryAddress(MemoryAddress address, long fieldOffset) {
+        return UNSAFE.getMemoryAddress(address, fieldOffset);
     }
 
     static long objectFieldOffset(Field field) {
@@ -721,26 +728,6 @@ final class PlatformDependent0 {
         UNSAFE.putObject(o, offset, x);
     }
 
-    static void copyMemory(long srcAddr, long dstAddr, long length) {
-        // Manual safe-point polling is only needed prior Java9:
-        // See https://bugs.openjdk.java.net/browse/JDK-8149596
-        if (javaVersion() <= 8) {
-            copyMemoryWithSafePointPolling(srcAddr, dstAddr, length);
-        } else {
-            UNSAFE.copyMemory(srcAddr, dstAddr, length);
-        }
-    }
-
-    private static void copyMemoryWithSafePointPolling(long srcAddr, long dstAddr, long length) {
-        while (length > 0) {
-            long size = Math.min(length, UNSAFE_COPY_THRESHOLD);
-            UNSAFE.copyMemory(srcAddr, dstAddr, size);
-            length -= size;
-            srcAddr += size;
-            dstAddr += size;
-        }
-    }
-
     static void copyMemory(Object src, long srcOffset, Object dst, long dstOffset, long length) {
         // Manual safe-point polling is only needed prior Java9:
         // See https://bugs.openjdk.java.net/browse/JDK-8149596
@@ -760,10 +747,6 @@ final class PlatformDependent0 {
             srcOffset += size;
             dstOffset += size;
         }
-    }
-
-    static void setMemory(long address, long bytes, byte value) {
-        UNSAFE.setMemory(address, bytes, value);
     }
 
     static void setMemory(Object o, long offset, long bytes, byte value) {
@@ -943,16 +926,16 @@ final class PlatformDependent0 {
         return UNSAFE.addressSize();
     }
 
-    static long allocateMemory(long size) {
-        return UNSAFE.allocateMemory(size);
+    static MemoryAddress allocateMemory(long size) {
+        return UNSAFE.allocateMemoryObject(size);
     }
 
-    static void freeMemory(long address) {
-        UNSAFE.freeMemory(address);
+    static void freeMemory(MemoryAddress address) {
+        UNSAFE.freeMemoryObject(address);
     }
 
-    static long reallocateMemory(long address, long newSize) {
-        return UNSAFE.reallocateMemory(address, newSize);
+    static MemoryAddress reallocateMemory(MemoryAddress address, long newSize) {
+        return UNSAFE.reallocateMemoryObject(address, newSize);
     }
 
     static boolean isAndroid() {

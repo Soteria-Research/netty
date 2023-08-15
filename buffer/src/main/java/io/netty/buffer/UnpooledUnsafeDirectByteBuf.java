@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import jdk.internal.vm.memory.MemoryAddress;
 
 /**
  * A NIO {@link ByteBuffer} based buffer. It is recommended to use
@@ -29,7 +30,7 @@ import java.nio.ByteBuffer;
  */
 public class UnpooledUnsafeDirectByteBuf extends UnpooledDirectByteBuf {
 
-    long memoryAddress;
+    MemoryAddress memoryAddress;
 
     /**
      * Creates a new direct buffer.
@@ -75,7 +76,7 @@ public class UnpooledUnsafeDirectByteBuf extends UnpooledDirectByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         ensureAccessible();
         return memoryAddress;
     }
@@ -284,8 +285,8 @@ public class UnpooledUnsafeDirectByteBuf extends UnpooledDirectByteBuf {
         return UnsafeByteBufUtil.copy(this, addr(index), index, length);
     }
 
-    final long addr(int index) {
-        return memoryAddress + index;
+    final MemoryAddress addr(int index) {
+        return memoryAddress.add(index);
     }
 
     @Override
