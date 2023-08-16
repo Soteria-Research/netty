@@ -672,12 +672,12 @@ final class PlatformDependent0 {
         return UNSAFE.getInt(data, INT_ARRAY_BASE_OFFSET + INT_ARRAY_INDEX_SCALE * index);
     }
 
-    static int getIntVolatile(long address) {
-        return UNSAFE.getIntVolatile(null, address);
+    static int getIntVolatile(MemoryAddress address) {
+        return UNSAFE.getIntVolatile(address, 0);
     }
 
-    static void putIntOrdered(long adddress, int newValue) {
-        UNSAFE.putOrderedInt(null, adddress, newValue);
+    static void putIntOrdered(MemoryAddress adddress, int newValue) {
+        UNSAFE.putOrderedInt(adddress, 0, newValue);
     }
 
     static long getLong(byte[] data, int index) {
@@ -688,19 +688,19 @@ final class PlatformDependent0 {
         return UNSAFE.getLong(data, LONG_ARRAY_BASE_OFFSET + LONG_ARRAY_INDEX_SCALE * index);
     }
 
-    static void putByte(long address, byte value) {
+    static void putByte(MemoryAddress address, byte value) {
         UNSAFE.putByte(address, value);
     }
 
-    static void putShort(long address, short value) {
+    static void putShort(MemoryAddress address, short value) {
         UNSAFE.putShort(address, value);
     }
 
-    static void putInt(long address, int value) {
+    static void putInt(MemoryAddress address, int value) {
         UNSAFE.putInt(address, value);
     }
 
-    static void putLong(long address, long value) {
+    static void putLong(MemoryAddress address, long value) {
         UNSAFE.putLong(address, value);
     }
 

@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 class PooledHeapByteBuf extends PooledByteBuf<byte[]> {
 
     private static final ObjectPool<PooledHeapByteBuf> RECYCLER = ObjectPool.newPool(
@@ -98,7 +100,7 @@ class PooledHeapByteBuf extends PooledByteBuf<byte[]> {
     public final ByteBuf getBytes(int index, ByteBuf dst, int dstIndex, int length) {
         checkDstIndex(index, length, dstIndex, dst.capacity());
         if (dst.hasMemoryAddress()) {
-            PlatformDependent.copyMemory(memory, idx(index), dst.memoryAddress() + dstIndex, length);
+            PlatformDependent.copyMemory(memory, idx(index), dst.memoryAddress().add(dstIndex), length);
         } else if (dst.hasArray()) {
             getBytes(index, dst.array(), dst.arrayOffset() + dstIndex, length);
         } else {
@@ -178,7 +180,7 @@ class PooledHeapByteBuf extends PooledByteBuf<byte[]> {
     public final ByteBuf setBytes(int index, ByteBuf src, int srcIndex, int length) {
         checkSrcIndex(index, length, srcIndex, src.capacity());
         if (src.hasMemoryAddress()) {
-            PlatformDependent.copyMemory(src.memoryAddress() + srcIndex, memory, idx(index), length);
+            PlatformDependent.copyMemory(src.memoryAddress().add(srcIndex), memory, idx(index), length);
         } else if (src.hasArray()) {
             setBytes(index, src.array(), src.arrayOffset() + srcIndex, length);
         } else {

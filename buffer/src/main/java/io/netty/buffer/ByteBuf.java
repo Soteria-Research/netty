@@ -29,6 +29,8 @@ import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 /**
  * A random and sequential accessible sequence of zero or more bytes (octets).
  * This interface provides an abstract view for one or more primitive byte
@@ -2384,7 +2386,7 @@ public abstract class ByteBuf implements ReferenceCounted, Comparable<ByteBuf>, 
      * @throws UnsupportedOperationException
      *         if this buffer does not support accessing the low-level memory address
      */
-    public abstract long memoryAddress();
+    public abstract MemoryAddress memoryAddress();
 
     /**
      * Returns {@code true} if this {@link ByteBuf} implementation is backed by a single memory region.

@@ -26,6 +26,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 /**
  * A derived buffer which simply forwards all data access requests to its
  * parent.  It is recommended to use {@link ByteBuf#duplicate()} instead
@@ -111,7 +113,7 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         return unwrap().memoryAddress();
     }
 

@@ -29,6 +29,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.buffer.AbstractUnpooledSlicedByteBuf.checkSliceOutOfBounds;
 
 final class PooledSlicedByteBuf extends AbstractPooledDerivedByteBuf {
@@ -79,8 +81,8 @@ final class PooledSlicedByteBuf extends AbstractPooledDerivedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
-        return unwrap().memoryAddress() + adjustment;
+    public MemoryAddress memoryAddress() {
+        return unwrap().memoryAddress().add(adjustment);
     }
 
     @Override

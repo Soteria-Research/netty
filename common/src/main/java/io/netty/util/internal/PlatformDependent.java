@@ -60,6 +60,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.util.internal.PlatformDependent0.HASH_CODE_ASCII_SEED;
 import static io.netty.util.internal.PlatformDependent0.HASH_CODE_C1;
 import static io.netty.util.internal.PlatformDependent0.HASH_CODE_C2;
@@ -547,12 +549,12 @@ public final class PlatformDependent {
         PlatformDependent0.safeConstructPutInt(object, fieldOffset, value);
     }
 
-    public static int getIntVolatile(long address) {
+    public static int getIntVolatile(MemoryAddress address) {
         return PlatformDependent0.getIntVolatile(address);
     }
 
-    public static void putIntOrdered(long adddress, int newValue) {
-        PlatformDependent0.putIntOrdered(adddress, newValue);
+    public static void putIntOrdered(MemoryAddress address, int newValue) {
+        PlatformDependent0.putIntOrdered(address, newValue);
     }
 
     public static byte getByte(MemoryAddress address) {
@@ -695,19 +697,19 @@ public final class PlatformDependent {
         return value & 0x1f;
     }
 
-    public static void putByte(long address, byte value) {
+    public static void putByte(MemoryAddress address, byte value) {
         PlatformDependent0.putByte(address, value);
     }
 
-    public static void putShort(long address, short value) {
+    public static void putShort(MemoryAddress address, short value) {
         PlatformDependent0.putShort(address, value);
     }
 
-    public static void putInt(long address, int value) {
+    public static void putInt(MemoryAddress address, int value) {
         PlatformDependent0.putInt(address, value);
     }
 
-    public static void putLong(long address, long value) {
+    public static void putLong(MemoryAddress address, long value) {
         PlatformDependent0.putLong(address, value);
     }
 
@@ -742,6 +744,14 @@ public final class PlatformDependent {
     public static void copyMemory(byte[] src, int srcIndex, byte[] dst, int dstIndex, long length) {
         PlatformDependent0.copyMemory(src, BYTE_ARRAY_BASE_OFFSET + srcIndex,
                                       dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
+    }
+
+    public static void copyMemory(byte[] src, int srcIndex, MemoryAddress dstAddr, long length) {
+        PlatformDependent0.copyMemory(src, BYTE_ARRAY_BASE_OFFSET + srcIndex, dstAddr, 0, length);
+    }
+
+    public static void copyMemory(MemoryAddress srcAddr, byte[] dst, int dstIndex, long length) {
+        PlatformDependent0.copyMemory(srcAddr, 0, dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
     }
 
     public static void copyMemory(MemoryAddress src, MemoryAddress dst, long length) {
@@ -815,8 +825,8 @@ public final class PlatformDependent {
             return PlatformDependent0.alignSlice(buffer, alignment);
         }
         if (hasUnsafe()) {
-            long address = directBufferAddress(buffer);
-            long aligned = align(address, alignment);
+            MemoryAddress address = directBufferAddress(buffer);
+            long aligned = align(address.getRawAddress(), alignment);
             buffer.position((int) (aligned - address));
             return buffer.slice();
         }

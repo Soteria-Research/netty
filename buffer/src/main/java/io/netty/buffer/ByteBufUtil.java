@@ -45,6 +45,9 @@ import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
 import java.util.Locale;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
+
 import static io.netty.util.internal.MathUtil.isOutOfBounds;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
@@ -852,7 +855,7 @@ public final class ByteBufUtil {
                                        buffer.arrayOffset() + writerIndex, seq, start, end);
             }
             if (buffer.hasMemoryAddress()) {
-                return unsafeWriteUtf8(null, buffer.memoryAddress(), writerIndex, seq, start, end);
+                return unsafeWriteUtf8_MemoryAddress(buffer.memoryAddress(), writerIndex, seq, start, end);
             }
         } else {
             if (buffer.hasArray()) {
@@ -1027,7 +1030,7 @@ public final class ByteBufUtil {
         return writerIndex - oldWriterIndex;
     }
 
-    // unsafe Fast-Path implementation
+        // unsafe Fast-Path implementation - for buffer + (long) offset
     private static int unsafeWriteUtf8(byte[] buffer, long memoryOffset, int writerIndex,
                                        CharSequence seq, int start, int end) {
         assert !(seq instanceof AsciiString);
@@ -1072,6 +1075,67 @@ public final class ByteBufUtil {
             }
         }
         return (int) (writerOffset - oldWriterOffset);
+    }
+
+    // unsafe Fast-Path implementation - for (MemoryAddress) address only 
+    private static int unsafeWriteUtf8_MemoryAddress(MemoryAddress address, int writerIndex,
+                                       CharSequence seq, int start, int end) {
+        assert !(seq instanceof AsciiString);
+        MemoryAddress writerAddress = address.add(writerIndex);
+        final long oldWriterAddress = writerAddress;
+        for (int i = start; i < end; i++) {
+            char c = seq.charAt(i);
+            if (c < 0x80) {
+                PlatformDependent.putByte(writerAddress++, (byte) c);
+                writerAddress = writerAddress.add(1);
+            } else if (c < 0x800) {
+                PlatformDependent.putByte(writerAddress, (byte) (0xc0 | (c >> 6)));
+                writerAddress = writerAddress.add(1);
+                PlatformDependent.putByte(writerAddress, (byte) (0x80 | (c & 0x3f)));
+                writerAddress = writerAddress.add(1);
+            } else if (isSurrogate(c)) {
+                if (!Character.isHighSurrogate(c)) {
+                    PlatformDependent.putByte(writerAddress, WRITE_UTF_UNKNOWN);
+                    writerAddress = writerAddress.add(1);
+                    continue;
+                }
+                // Surrogate Pair consumes 2 characters.
+                if (++i == end) {
+                    PlatformDependent.putByte(writerAddress, WRITE_UTF_UNKNOWN);
+                    writerAddress = writerAddress.add(1);
+                    break;
+                }
+                char c2 = seq.charAt(i);
+                // Extra method is copied here to NOT allow inlining of writeUtf8
+                // and increase the chance to inline CharSequence::charAt instead
+                if (!Character.isLowSurrogate(c2)) {
+                    PlatformDependent.putByte(writerAddress, WRITE_UTF_UNKNOWN);
+                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress,
+                                              (byte) (Character.isHighSurrogate(c2)? WRITE_UTF_UNKNOWN : c2));
+                    writerAddress = writerAddress.add(1);
+                } else {
+                    int codePoint = Character.toCodePoint(c, c2);
+                    // See https://www.unicode.org/versions/Unicode7.0.0/ch03.pdf#G2630.
+                    PlatformDependent.putByte(writerAddress, (byte) (0xf0 | (codePoint >> 18)));
+                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress, (byte) (0x80 | ((codePoint >> 12) & 0x3f)));
+                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress, (byte) (0x80 | ((codePoint >> 6) & 0x3f)));
+                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress, (byte) (0x80 | (codePoint & 0x3f)));
+                    writerAddress = writerAddress.add(1);
+                }
+            } else {
+                PlatformDependent.putByte(writerAddress, (byte) (0xe0 | (c >> 12)));
+                writerAddress = writerAddress.add(1);
+                PlatformDependent.putByte(writerAddress, (byte) (0x80 | ((c >> 6) & 0x3f)));
+                writerAddress = writerAddress.add(1);
+                PlatformDependent.putByte(writerAddress, (byte) (0x80 | (c & 0x3f)));
+                writerAddress = writerAddress.add(1);
+            }
+        }
+        return (int) (writerAddress.getRawAddress() - oldWriterAddress.getRawAddress());
     }
 
     /**

@@ -29,6 +29,8 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.util.Collections;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 /**
  * {@link ByteBuf} implementation which allows to wrap an array of {@link ByteBuf} in a read-only mode.
  * This is useful to write an array of {@link ByteBuf}s.
@@ -648,7 +650,7 @@ final class FixedCompositeByteBuf extends AbstractReferenceCountedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         switch (buffers.length) {
             case 0:
                 return Unpooled.EMPTY_BUFFER.memoryAddress();

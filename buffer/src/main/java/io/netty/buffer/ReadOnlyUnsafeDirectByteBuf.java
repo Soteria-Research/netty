@@ -21,12 +21,14 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 
 /**
  * Read-only ByteBuf which wraps a read-only direct ByteBuffer and use unsafe for best performance.
  */
 final class ReadOnlyUnsafeDirectByteBuf extends ReadOnlyByteBufferBuf {
-    private final long memoryAddress;
+    private final MemoryAddress memoryAddress;
 
     ReadOnlyUnsafeDirectByteBuf(ByteBufAllocator allocator, ByteBuffer byteBuffer) {
         super(allocator, byteBuffer);
@@ -69,7 +71,7 @@ final class ReadOnlyUnsafeDirectByteBuf extends ReadOnlyByteBufferBuf {
         }
 
         if (dst.hasMemoryAddress()) {
-            PlatformDependent.copyMemory(addr(index), dst.memoryAddress() + dstIndex, length);
+            PlatformDependent.copyMemory(addr(index), dst.memoryAddress().add(dstIndex), length);
         } else if (dst.hasArray()) {
             PlatformDependent.copyMemory(addr(index), dst.array(), dst.arrayOffset() + dstIndex, length);
         } else {
@@ -114,11 +116,11 @@ final class ReadOnlyUnsafeDirectByteBuf extends ReadOnlyByteBufferBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         return memoryAddress;
     }
 
-    private long addr(int index) {
-        return memoryAddress + index;
+    private MemoryAddress addr(int index) {
+        return memoryAddress.add(index);
     }
 }

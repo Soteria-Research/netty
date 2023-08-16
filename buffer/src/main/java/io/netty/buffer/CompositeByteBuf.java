@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -822,13 +824,13 @@ public class CompositeByteBuf extends AbstractReferenceCountedByteBuf implements
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         switch (componentCount) {
         case 0:
             return Unpooled.EMPTY_BUFFER.memoryAddress();
         case 1:
             Component c = components[0];
-            return c.buf.memoryAddress() + c.adjustment;
+            return c.buf.memoryAddress().add(c.adjustment);
         default:
             throw new UnsupportedOperationException();
         }

@@ -110,8 +110,8 @@ abstract class AbstractUnpooledSlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
-        return unwrap().memoryAddress() + adjustment;
+    public MemoryAddress memoryAddress() {
+        return unwrap().memoryAddress().add(adjustment);
     }
 
     @Override

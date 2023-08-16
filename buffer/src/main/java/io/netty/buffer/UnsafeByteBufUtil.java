@@ -24,6 +24,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ReadOnlyBufferException;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.util.internal.MathUtil.isOutOfBounds;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 import static io.netty.util.internal.PlatformDependent.BIG_ENDIAN_NATIVE_ORDER;
@@ -39,7 +41,7 @@ final class UnsafeByteBufUtil {
         return PlatformDependent.getByte(address);
     }
 
-    static short getShort(long address) {
+    static short getShort(MemoryAddress address) {
         if (UNALIGNED) {
             short v = PlatformDependent.getShort(address);
             return BIG_ENDIAN_NATIVE_ORDER ? v : Short.reverseBytes(v);
@@ -47,7 +49,7 @@ final class UnsafeByteBufUtil {
         return (short) (PlatformDependent.getByte(address) << 8 | PlatformDependent.getByte(address + 1) & 0xff);
     }
 
-    static short getShortLE(long address) {
+    static short getShortLE(MemoryAddress address) {
         if (UNALIGNED) {
             short v = PlatformDependent.getShort(address);
             return BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(v) : v;
@@ -55,7 +57,7 @@ final class UnsafeByteBufUtil {
         return (short) (PlatformDependent.getByte(address) & 0xff | PlatformDependent.getByte(address + 1) << 8);
     }
 
-    static int getUnsignedMedium(long address) {
+    static int getUnsignedMedium(MemoryAddress address) {
         if (UNALIGNED) {
             return (PlatformDependent.getByte(address) & 0xff) << 16 |
                     (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(address + 1)
@@ -66,7 +68,7 @@ final class UnsafeByteBufUtil {
                PlatformDependent.getByte(address + 2)  & 0xff;
     }
 
-    static int getUnsignedMediumLE(long address) {
+    static int getUnsignedMediumLE(MemoryAddress address) {
         if (UNALIGNED) {
             return (PlatformDependent.getByte(address) & 0xff) |
                     ((BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(PlatformDependent.getShort(address + 1))
@@ -77,7 +79,7 @@ final class UnsafeByteBufUtil {
                (PlatformDependent.getByte(address + 2) & 0xff) << 16;
     }
 
-    static int getInt(long address) {
+    static int getInt(MemoryAddress address) {
         if (UNALIGNED) {
             int v = PlatformDependent.getInt(address);
             return BIG_ENDIAN_NATIVE_ORDER ? v : Integer.reverseBytes(v);
@@ -88,7 +90,7 @@ final class UnsafeByteBufUtil {
                PlatformDependent.getByte(address + 3)  & 0xff;
     }
 
-    static int getIntLE(long address) {
+    static int getIntLE(MemoryAddress address) {
         if (UNALIGNED) {
             int v = PlatformDependent.getInt(address);
             return BIG_ENDIAN_NATIVE_ORDER ? Integer.reverseBytes(v) : v;
@@ -99,7 +101,7 @@ final class UnsafeByteBufUtil {
                PlatformDependent.getByte(address + 3) << 24;
     }
 
-    static long getLong(long address) {
+    static long getLong(MemoryAddress address) {
         if (UNALIGNED) {
             long v = PlatformDependent.getLong(address);
             return BIG_ENDIAN_NATIVE_ORDER ? v : Long.reverseBytes(v);
@@ -114,7 +116,7 @@ final class UnsafeByteBufUtil {
                (PlatformDependent.getByte(address + 7)) & 0xffL;
     }
 
-    static long getLongLE(long address) {
+    static long getLongLE(MemoryAddress address) {
         if (UNALIGNED) {
             long v = PlatformDependent.getLong(address);
             return BIG_ENDIAN_NATIVE_ORDER ? Long.reverseBytes(v) : v;
@@ -129,11 +131,11 @@ final class UnsafeByteBufUtil {
                ((long) PlatformDependent.getByte(address + 7))  << 56;
     }
 
-    static void setByte(long address, int value) {
+    static void setByte(MemoryAddress address, int value) {
         PlatformDependent.putByte(address, (byte) value);
     }
 
-    static void setShort(long address, int value) {
+    static void setShort(MemoryAddress address, int value) {
         if (UNALIGNED) {
             PlatformDependent.putShort(
                     address, BIG_ENDIAN_NATIVE_ORDER ? (short) value : Short.reverseBytes((short) value));
@@ -143,7 +145,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setShortLE(long address, int value) {
+    static void setShortLE(MemoryAddress address, int value) {
         if (UNALIGNED) {
             PlatformDependent.putShort(
                 address, BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) value) : (short) value);
@@ -153,7 +155,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setMedium(long address, int value) {
+    static void setMedium(MemoryAddress address, int value) {
         PlatformDependent.putByte(address, (byte) (value >>> 16));
         if (UNALIGNED) {
             PlatformDependent.putShort(address + 1, BIG_ENDIAN_NATIVE_ORDER ? (short) value
@@ -164,7 +166,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setMediumLE(long address, int value) {
+    static void setMediumLE(MemoryAddress address, int value) {
         PlatformDependent.putByte(address, (byte) value);
         if (UNALIGNED) {
             PlatformDependent.putShort(address + 1, BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) (value >>> 8))
@@ -175,7 +177,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setInt(long address, int value) {
+    static void setInt(MemoryAddress address, int value) {
         if (UNALIGNED) {
             PlatformDependent.putInt(address, BIG_ENDIAN_NATIVE_ORDER ? value : Integer.reverseBytes(value));
         } else {
@@ -186,7 +188,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setIntLE(long address, int value) {
+    static void setIntLE(MemoryAddress address, int value) {
         if (UNALIGNED) {
             PlatformDependent.putInt(address, BIG_ENDIAN_NATIVE_ORDER ? Integer.reverseBytes(value) : value);
         } else {
@@ -197,7 +199,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setLong(long address, long value) {
+    static void setLong(MemoryAddress address, long value) {
         if (UNALIGNED) {
             PlatformDependent.putLong(address, BIG_ENDIAN_NATIVE_ORDER ? value : Long.reverseBytes(value));
         } else {
@@ -212,7 +214,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setLongLE(long address, long value) {
+    static void setLongLE(MemoryAddress address, long value) {
         if (UNALIGNED) {
             PlatformDependent.putLong(address, BIG_ENDIAN_NATIVE_ORDER ? Long.reverseBytes(value) : value);
         } else {
@@ -431,7 +433,7 @@ final class UnsafeByteBufUtil {
         PlatformDependent.setMemory(array, index, length, ZERO);
     }
 
-    static ByteBuf copy(AbstractByteBuf buf, long addr, int index, int length) {
+    static ByteBuf copy(AbstractByteBuf buf, MemoryAddress addr, int index, int length) {
         buf.checkIndex(index, length);
         ByteBuf copy = buf.alloc().directBuffer(length, buf.maxCapacity());
         if (length != 0) {
@@ -461,7 +463,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void getBytes(AbstractByteBuf buf, long addr, int index, ByteBuf dst, int dstIndex, int length) {
+    static void getBytes(AbstractByteBuf buf, MemoryAddress addr, int index, ByteBuf dst, int dstIndex, int length) {
         buf.checkIndex(index, length);
         checkNotNull(dst, "dst");
         if (isOutOfBounds(dstIndex, length, dst.capacity())) {
@@ -469,7 +471,7 @@ final class UnsafeByteBufUtil {
         }
 
         if (dst.hasMemoryAddress()) {
-            PlatformDependent.copyMemory(addr, dst.memoryAddress() + dstIndex, length);
+            PlatformDependent.copyMemory(addr, dst.memoryAddress().add(dstIndex), length);
         } else if (dst.hasArray()) {
             PlatformDependent.copyMemory(addr, dst.array(), dst.arrayOffset() + dstIndex, length);
         } else {
@@ -488,7 +490,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void getBytes(AbstractByteBuf buf, long addr, int index, ByteBuffer dst) {
+    static void getBytes(AbstractByteBuf buf, MemoryAddress addr, int index, ByteBuffer dst) {
         buf.checkIndex(index, dst.remaining());
         if (dst.remaining() == 0) {
             return;
@@ -500,8 +502,8 @@ final class UnsafeByteBufUtil {
                 throw new ReadOnlyBufferException();
             }
             // Copy to direct memory
-            long dstAddress = PlatformDependent.directBufferAddress(dst);
-            PlatformDependent.copyMemory(addr, dstAddress + dst.position(), dst.remaining());
+            MemoryAddress dstAddress = PlatformDependent.directBufferAddress(dst);
+            PlatformDependent.copyMemory(addr, dstAddress.add(dst.position()), (long) dst.remaining());
             dst.position(dst.position() + dst.remaining());
         } else if (dst.hasArray()) {
             // Copy to array
@@ -512,7 +514,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setBytes(AbstractByteBuf buf, long addr, int index, ByteBuf src, int srcIndex, int length) {
+    static void setBytes(AbstractByteBuf buf, MemoryAddress addr, int index, ByteBuf src, int srcIndex, int length) {
         buf.checkIndex(index, length);
         checkNotNull(src, "src");
         if (isOutOfBounds(srcIndex, length, src.capacity())) {
@@ -520,17 +522,17 @@ final class UnsafeByteBufUtil {
         }
 
         if (length != 0) {
-            if (src.hasMemoryAddress()) {
-                PlatformDependent.copyMemory(src.memoryAddress() + srcIndex, addr, length);
-            } else if (src.hasArray()) {
+            if (src.hasArray()) {
                 PlatformDependent.copyMemory(src.array(), src.arrayOffset() + srcIndex, addr, length);
+            } else if (src.hasMemoryAddress()) {
+                PlatformDependent.copyMemory(src.memoryAddress().add(srcIndex), addr, length);
             } else {
                 src.getBytes(srcIndex, buf, index, length);
             }
         }
     }
 
-    static void setBytes(AbstractByteBuf buf, long addr, int index, byte[] src, int srcIndex, int length) {
+    static void setBytes(AbstractByteBuf buf, MemoryAddress addr, int index, byte[] src, int srcIndex, int length) {
         buf.checkIndex(index, length);
         // we need to check not null for src as it may cause the JVM crash
         // See https://github.com/netty/netty/issues/10791
@@ -544,7 +546,7 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    static void setBytes(AbstractByteBuf buf, long addr, int index, ByteBuffer src) {
+    static void setBytes(AbstractByteBuf buf, MemoryAddress addr, int index, ByteBuffer src) {
         final int length = src.remaining();
         if (length == 0) {
             return;
@@ -553,8 +555,8 @@ final class UnsafeByteBufUtil {
         if (src.isDirect()) {
             buf.checkIndex(index, length);
             // Copy from direct memory
-            long srcAddress = PlatformDependent.directBufferAddress(src);
-            PlatformDependent.copyMemory(srcAddress + src.position(), addr, length);
+            MemoryAddress srcAddress = PlatformDependent.directBufferAddress(src);
+            PlatformDependent.copyMemory(srcAddress.add(src.position()), addr, length);
             src.position(src.position() + length);
         } else if (src.hasArray()) {
             buf.checkIndex(index, length);
@@ -573,21 +575,21 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    private static void setSingleBytes(final AbstractByteBuf buf, final long addr, final int index,
+    private static void setSingleBytes(final AbstractByteBuf buf, final MemoryAddress addr, final int index,
                                        final ByteBuffer src, final int length) {
         buf.checkIndex(index, length);
         final int srcPosition = src.position();
         final int srcLimit = src.limit();
-        long dstAddr = addr;
+        MemoryAddress dstAddr = addr;
         for (int srcIndex = srcPosition; srcIndex < srcLimit; srcIndex++) {
             final byte value = src.get(srcIndex);
             PlatformDependent.putByte(dstAddr, value);
-            dstAddr++;
+            dstAddr = dstAddr.add(1);
         }
         src.position(srcLimit);
     }
 
-    static void getBytes(AbstractByteBuf buf, long addr, int index, OutputStream out, int length) throws IOException {
+    static void getBytes(AbstractByteBuf buf, MemoryAddress addr, int index, OutputStream out, int length) throws IOException {
         buf.checkIndex(index, length);
         if (length != 0) {
             int len = Math.min(length, ByteBufUtil.WRITE_CHUNK_SIZE);
@@ -607,18 +609,18 @@ final class UnsafeByteBufUtil {
         }
     }
 
-    private static void getBytes(long inAddr, byte[] in, int inOffset, int inLen, OutputStream out, int outLen)
+    private static void getBytes(MemoryAddress inAddr, byte[] in, int inOffset, int inLen, OutputStream out, int outLen)
             throws IOException {
         do {
             int len = Math.min(inLen, outLen);
             PlatformDependent.copyMemory(inAddr, in, inOffset, len);
             out.write(in, inOffset, len);
             outLen -= len;
-            inAddr += len;
+            inAddr = inAddr.add(len);
         } while (outLen > 0);
     }
 
-    static void setZero(long addr, int length) {
+    static void setZero(MemoryAddress addr, int length) {
         if (length == 0) {
             return;
         }
