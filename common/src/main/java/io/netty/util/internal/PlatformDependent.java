@@ -434,7 +434,7 @@ public final class PlatformDependent {
 
     /**
      * Return the address size of the OS.
-     * 4 (for 32 bits systems ) and 8 (for 64 bits systems).
+     * 4 (for 32 bits systems ); 8 (for 64 bits systems) and 16 (for 128 bit systems).
      */
     public static int addressSize() {
         return ADDRESS_SIZE;
@@ -448,7 +448,7 @@ public final class PlatformDependent {
         PlatformDependent0.freeMemory(address);
     }
 
-    public static MemoryAddress reallocateMemory(MemoryAddress address, MemoryAddress newSize) {
+    public static MemoryAddress reallocateMemory(MemoryAddress address, long newSize) {
         return PlatformDependent0.reallocateMemory(address, newSize);
     }
 
@@ -527,7 +527,7 @@ public final class PlatformDependent {
         return PlatformDependent0.directBufferAddress(buffer);
     }
 
-    public static ByteBuffer directBuffer(long memoryAddress, int size) {
+    public static ByteBuffer directBuffer(MemoryAddress memoryAddress, int size) {
         if (PlatformDependent0.hasDirectBufferNoCleanerConstructor()) {
             return PlatformDependent0.newDirectBuffer(memoryAddress, size);
         }
@@ -555,19 +555,19 @@ public final class PlatformDependent {
         PlatformDependent0.putIntOrdered(adddress, newValue);
     }
 
-    public static byte getByte(long address) {
+    public static byte getByte(MemoryAddress address) {
         return PlatformDependent0.getByte(address);
     }
 
-    public static short getShort(long address) {
+    public static short getShort(MemoryAddress address) {
         return PlatformDependent0.getShort(address);
     }
 
-    public static int getInt(long address) {
+    public static int getInt(MemoryAddress address) {
         return PlatformDependent0.getInt(address);
     }
 
-    public static long getLong(long address) {
+    public static long getLong(MemoryAddress address) {
         return PlatformDependent0.getLong(address);
     }
 

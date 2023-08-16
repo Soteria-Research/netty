@@ -636,19 +636,19 @@ final class PlatformDependent0 {
         return UNSAFE.objectFieldOffset(field);
     }
 
-    static byte getByte(long address) {
+    static byte getByte(MemoryAddress address) {
         return UNSAFE.getByte(address);
     }
 
-    static short getShort(long address) {
+    static short getShort(MemoryAddress address) {
         return UNSAFE.getShort(address);
     }
 
-    static int getInt(long address) {
+    static int getInt(MemoryAddress address) {
         return UNSAFE.getInt(address);
     }
 
-    static long getLong(long address) {
+    static long getLong(MemoryAddress address) {
         return UNSAFE.getLong(address);
     }
 
