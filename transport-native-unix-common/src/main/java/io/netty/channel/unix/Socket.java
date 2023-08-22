@@ -279,7 +279,7 @@ public class Socket extends FileDescriptor {
         return ioResult("recv", res);
     }
 
-    public int recvAddress(long address, int pos, int limit) throws IOException {
+    public int recvAddress(MemoryAddress address, int pos, int limit) throws IOException {
         int res = recvAddress(intValue(), address, pos, limit);
         if (res > 0) {
             return res;

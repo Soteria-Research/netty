@@ -245,7 +245,7 @@ class PooledHeapByteBuf extends PooledByteBuf<byte[]> {
     }
 
     @Override
-    public final long memoryAddress() {
+    public final MemoryAddress memoryAddress() {
         throw new UnsupportedOperationException();
     }
 

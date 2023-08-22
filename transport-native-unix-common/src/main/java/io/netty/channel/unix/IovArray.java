@@ -23,6 +23,8 @@ import io.netty.util.internal.PlatformDependent;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.channel.unix.Limits.IOV_MAX;
 import static io.netty.channel.unix.Limits.SSIZE_MAX;
 import static io.netty.util.internal.ObjectUtil.checkPositive;
@@ -47,7 +49,7 @@ import static java.lang.Math.min;
  */
 public final class IovArray implements MessageProcessor {
 
-    /** The size of an address which should be 8 for 64 bits and 4 for 32 bits. */
+    /** The size of an address which should be 8 for 64 bits and 4 for 32 bits (and 16 for 128 bit platforms). */
     private static final int ADDRESS_SIZE = Buffer.addressSize();
 
     /**
@@ -62,7 +64,7 @@ public final class IovArray implements MessageProcessor {
      */
     private static final int MAX_CAPACITY = IOV_MAX * IOV_SIZE;
 
-    private final long memoryAddress;
+    private final MemoryAddress memoryAddress;
     private final ByteBuf memory;
     private int count;
     private long size;
@@ -109,17 +111,19 @@ public final class IovArray implements MessageProcessor {
                 return true;
             }
             if (buf.hasMemoryAddress()) {
-                return add(memoryAddress, buf.memoryAddress() + offset, len);
+                return add(memoryAddress, buf.memoryAddress().add(offset), len);
             } else {
                 ByteBuffer nioBuffer = buf.internalNioBuffer(offset, len);
-                return add(memoryAddress, Buffer.memoryAddress(nioBuffer) + nioBuffer.position(), len);
+                return add(memoryAddress, 
+                           Buffer.memoryAddress(nioBuffer).add(nioBuffer.position()), len);
             }
         } else {
             ByteBuffer[] buffers = buf.nioBuffers(offset, len);
             for (ByteBuffer nioBuffer : buffers) {
                 final int remaining = nioBuffer.remaining();
                 if (remaining != 0 &&
-                        (!add(memoryAddress, Buffer.memoryAddress(nioBuffer) + nioBuffer.position(), remaining)
+                        (!add(memoryAddress, 
+                        Buffer.memoryAddress(nioBuffer).add(nioBuffer.position()), remaining)
                                 || count == IOV_MAX)) {
                     return false;
                 }
@@ -128,8 +132,8 @@ public final class IovArray implements MessageProcessor {
         }
     }
 
-    private boolean add(long memoryAddress, long addr, int len) {
-        assert addr != 0;
+    private boolean add(MemoryAddress memoryAddress, MemoryAddress addr, int len) {
+        assert !MemoryAddress.isNull(addr);
 
         // If there is at least 1 entry then we enforce the maximum bytes. We want to accept at least one entry so we
         // will attempt to write some data and make progress.
@@ -150,7 +154,14 @@ public final class IovArray implements MessageProcessor {
         size += len;
         ++count;
 
-        if (ADDRESS_SIZE == 8) {
+        if (ADDRESS_SIZE == 16) {
+            if (PlatformDependent.hasUnsafe()) {
+                PlatformDependent.putObject(memoryAddress.add(baseOffset), 0, addr);
+                PlatformDependent.putLong(memoryAddress.add(lengthOffset), len);
+            } else {
+                throw new UnsupportedOperationException("IovArray.add - plaform must have Unsafe for this method to be called");
+            }
+        } else if (ADDRESS_SIZE == 8) {
             // 64bit
             if (PlatformDependent.hasUnsafe()) {
                 PlatformDependent.putLong(baseOffset + memoryAddress, addr);

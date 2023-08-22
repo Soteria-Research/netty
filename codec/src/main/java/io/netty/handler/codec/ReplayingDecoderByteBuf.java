@@ -24,6 +24,8 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.SwappedByteBuf;
@@ -126,7 +128,7 @@ final class ReplayingDecoderByteBuf extends ByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         throw new UnsupportedOperationException();
     }
 

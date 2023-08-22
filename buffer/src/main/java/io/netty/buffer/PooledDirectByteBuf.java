@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 final class PooledDirectByteBuf extends PooledByteBuf<ByteBuffer> {
 
     private static final ObjectPool<PooledDirectByteBuf> RECYCLER = ObjectPool.newPool(
@@ -307,7 +309,7 @@ final class PooledDirectByteBuf extends PooledByteBuf<ByteBuffer> {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         throw new UnsupportedOperationException();
     }
 }

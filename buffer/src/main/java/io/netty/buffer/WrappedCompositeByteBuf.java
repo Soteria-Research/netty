@@ -29,6 +29,8 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 class WrappedCompositeByteBuf extends CompositeByteBuf {
 
     private final CompositeByteBuf wrapped;
@@ -617,7 +619,7 @@ class WrappedCompositeByteBuf extends CompositeByteBuf {
     }
 
     @Override
-    public final long memoryAddress() {
+    public final MemoryAddress memoryAddress() {
         return wrapped.memoryAddress();
     }
 

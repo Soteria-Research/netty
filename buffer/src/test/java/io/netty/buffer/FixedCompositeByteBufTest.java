@@ -453,7 +453,7 @@ public class FixedCompositeByteBufTest {
         }
         ByteBuf buf = newBuffer(buf1);
         assertTrue(buf.hasMemoryAddress());
-        assertEquals(buf1.memoryAddress(), buf.memoryAddress());
+        assertEquals(buf1.memoryAddress().getRawAddress(), buf.memoryAddress().getRawAddress());
         buf.release();
     }
 
@@ -462,7 +462,7 @@ public class FixedCompositeByteBufTest {
         Assumptions.assumeTrue(EMPTY_BUFFER.hasMemoryAddress());
         ByteBuf buf = newBuffer(new ByteBuf[0]);
         assertTrue(buf.hasMemoryAddress());
-        assertEquals(EMPTY_BUFFER.memoryAddress(), buf.memoryAddress());
+        assertEquals(EMPTY_BUFFER.memoryAddress().getRawAddress(), buf.memoryAddress().getRawAddress());
         buf.release();
     }
 
@@ -500,9 +500,11 @@ public class FixedCompositeByteBufTest {
     public void testHasArrayWhenEmptyAndIsDirect() {
         ByteBuf buf = newBuffer(new ByteBuf[0]);
         assertTrue(buf.hasArray());
+        assertTrue(EMPTY_BUFFER.hasMemoryAddress());
+        assertTrue(buf.hasMemoryAddress());
         assertArrayEquals(EMPTY_BUFFER.array(), buf.array());
         assertEquals(EMPTY_BUFFER.isDirect(), buf.isDirect());
-        assertEquals(EMPTY_BUFFER.memoryAddress(), buf.memoryAddress());
+        assertEquals(EMPTY_BUFFER.memoryAddress().getRawAddress(), buf.memoryAddress().getRawAddress());
         buf.release();
     }
 

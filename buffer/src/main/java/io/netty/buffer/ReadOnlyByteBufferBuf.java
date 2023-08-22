@@ -27,6 +27,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 
 /**
  * Read-only ByteBuf which wraps a read-only ByteBuffer.
@@ -480,7 +482,7 @@ class ReadOnlyByteBufferBuf extends AbstractReferenceCountedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         throw new UnsupportedOperationException();
     }
 }

@@ -1082,60 +1082,47 @@ public final class ByteBufUtil {
                                        CharSequence seq, int start, int end) {
         assert !(seq instanceof AsciiString);
         MemoryAddress writerAddress = address.add(writerIndex);
-        final long oldWriterAddress = writerAddress;
+        long writerOffset = 0;
+        final MemoryAddress oldWriterAddress = writerAddress;
         for (int i = start; i < end; i++) {
             char c = seq.charAt(i);
             if (c < 0x80) {
-                PlatformDependent.putByte(writerAddress++, (byte) c);
-                writerAddress = writerAddress.add(1);
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) c);
             } else if (c < 0x800) {
-                PlatformDependent.putByte(writerAddress, (byte) (0xc0 | (c >> 6)));
-                writerAddress = writerAddress.add(1);
-                PlatformDependent.putByte(writerAddress, (byte) (0x80 | (c & 0x3f)));
-                writerAddress = writerAddress.add(1);
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0xc0 | (c >> 6)));
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (c & 0x3f)));
             } else if (isSurrogate(c)) {
                 if (!Character.isHighSurrogate(c)) {
-                    PlatformDependent.putByte(writerAddress, WRITE_UTF_UNKNOWN);
-                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress, writerOffset++, WRITE_UTF_UNKNOWN);
                     continue;
                 }
                 // Surrogate Pair consumes 2 characters.
                 if (++i == end) {
-                    PlatformDependent.putByte(writerAddress, WRITE_UTF_UNKNOWN);
-                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress, writerOffset++, WRITE_UTF_UNKNOWN);
                     break;
                 }
                 char c2 = seq.charAt(i);
                 // Extra method is copied here to NOT allow inlining of writeUtf8
                 // and increase the chance to inline CharSequence::charAt instead
                 if (!Character.isLowSurrogate(c2)) {
-                    PlatformDependent.putByte(writerAddress, WRITE_UTF_UNKNOWN);
-                    writerAddress = writerAddress.add(1);
-                    PlatformDependent.putByte(writerAddress,
+                    PlatformDependent.putByte(writerAddress, writerOffset++, WRITE_UTF_UNKNOWN);
+                    PlatformDependent.putByte(writerAddress, writerOffset++,
                                               (byte) (Character.isHighSurrogate(c2)? WRITE_UTF_UNKNOWN : c2));
-                    writerAddress = writerAddress.add(1);
                 } else {
                     int codePoint = Character.toCodePoint(c, c2);
                     // See https://www.unicode.org/versions/Unicode7.0.0/ch03.pdf#G2630.
-                    PlatformDependent.putByte(writerAddress, (byte) (0xf0 | (codePoint >> 18)));
-                    writerAddress = writerAddress.add(1);
-                    PlatformDependent.putByte(writerAddress, (byte) (0x80 | ((codePoint >> 12) & 0x3f)));
-                    writerAddress = writerAddress.add(1);
-                    PlatformDependent.putByte(writerAddress, (byte) (0x80 | ((codePoint >> 6) & 0x3f)));
-                    writerAddress = writerAddress.add(1);
-                    PlatformDependent.putByte(writerAddress, (byte) (0x80 | (codePoint & 0x3f)));
-                    writerAddress = writerAddress.add(1);
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0xf0 | (codePoint >> 18)));
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | ((codePoint >> 12) & 0x3f)));
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | ((codePoint >> 6) & 0x3f)));
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (codePoint & 0x3f)));
                 }
             } else {
-                PlatformDependent.putByte(writerAddress, (byte) (0xe0 | (c >> 12)));
-                writerAddress = writerAddress.add(1);
-                PlatformDependent.putByte(writerAddress, (byte) (0x80 | ((c >> 6) & 0x3f)));
-                writerAddress = writerAddress.add(1);
-                PlatformDependent.putByte(writerAddress, (byte) (0x80 | (c & 0x3f)));
-                writerAddress = writerAddress.add(1);
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0xe0 | (c >> 12)));
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | ((c >> 6) & 0x3f)));
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (c & 0x3f)));
             }
         }
-        return (int) (writerAddress.getRawAddress() - oldWriterAddress.getRawAddress());
+        return (int) (writerAddress.add(writerOffset).getRawAddress() - oldWriterAddress.getRawAddress());
     }
 
     /**

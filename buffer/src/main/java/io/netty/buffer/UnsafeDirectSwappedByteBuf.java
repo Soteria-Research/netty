@@ -18,6 +18,8 @@ package io.netty.buffer;
 
 import io.netty.util.internal.PlatformDependent;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 /**
  * Special {@link SwappedByteBuf} for {@link ByteBuf}s that are backed by a {@code memoryAddress}.
  */
@@ -27,12 +29,12 @@ final class UnsafeDirectSwappedByteBuf extends AbstractUnsafeSwappedByteBuf {
         super(buf);
     }
 
-    private static long addr(AbstractByteBuf wrapped, int index) {
+    private static MemoryAddress addr(AbstractByteBuf wrapped, int index) {
         // We need to call wrapped.memoryAddress() everytime and NOT cache it as it may change if the buffer expand.
         // See:
         // - https://github.com/netty/netty/issues/2587
         // - https://github.com/netty/netty/issues/2580
-        return wrapped.memoryAddress() + index;
+        return wrapped.memoryAddress().add(index);
     }
 
     @Override

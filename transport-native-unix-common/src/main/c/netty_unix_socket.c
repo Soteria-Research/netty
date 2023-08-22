@@ -490,6 +490,7 @@ static jint netty_unix_socket_recv(JNIEnv* env, jclass clazz, jint fd, jobject j
 }
 
 static jint netty_unix_socket_recvAddress(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
+    
     return _recv(env, clazz, fd, (void*) (intptr_t) address, pos, limit);
 }
 

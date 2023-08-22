@@ -28,6 +28,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 
 /**
@@ -192,7 +194,7 @@ public class UnpooledDirectByteBuf extends AbstractReferenceCountedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         throw new UnsupportedOperationException();
     }
 

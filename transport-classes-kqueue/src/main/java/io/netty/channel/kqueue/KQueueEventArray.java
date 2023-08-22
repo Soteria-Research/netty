@@ -20,6 +20,8 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 /**
  * Represents an array of kevent structures, backed by offheap memory.
  *
@@ -41,7 +43,7 @@ final class KQueueEventArray {
     private static final int KQUEUE_DATA_OFFSET = Native.offsetofKeventData();
 
     private ByteBuffer memory;
-    private long memoryAddress;
+    private MemoryAddress memoryAddress;
     private int size;
     private int capacity;
 
@@ -57,7 +59,7 @@ final class KQueueEventArray {
     /**
      * Return the {@code memoryAddress} which points to the start of this {@link KQueueEventArray}.
      */
-    long memoryAddress() {
+    MemoryAddress memoryAddress() {
         return memoryAddress;
     }
 
@@ -128,13 +130,13 @@ final class KQueueEventArray {
         return index * KQUEUE_EVENT_SIZE;
     }
 
-    private long getKEventOffsetAddress(int index) {
-        return getKEventOffset(index) + memoryAddress;
+    private MemoryAddress getKEventOffsetAddress(int index) {
+        return memoryAddress.add(getKEventOffset(index));
     }
 
     private short getShort(int index, int offset) {
         if (PlatformDependent.hasUnsafe()) {
-            return PlatformDependent.getShort(getKEventOffsetAddress(index) + offset);
+            return PlatformDependent.getShort(getKEventOffsetAddress(index).add(offset));
         }
         return memory.getShort(getKEventOffset(index) + offset);
     }
@@ -169,5 +171,6 @@ final class KQueueEventArray {
         return capacity * KQUEUE_EVENT_SIZE;
     }
 
-    private static native void evSet(long keventAddress, int ident, short filter, short flags, int fflags);
+    // MOJO FIXME TODO - update this native method to have keventAddress as a MemoryAddress object
+    private static native void evSet(MemoryAddress keventAddress, int ident, short filter, short flags, int fflags);
 }

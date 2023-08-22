@@ -22,6 +22,8 @@ import io.netty.buffer.UnpooledDirectByteBuf;
 import io.netty.channel.unix.IovArray;
 import org.junit.jupiter.api.Test;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -58,7 +60,7 @@ public abstract class IovArrayTest {
         }
 
         @Override
-        public long memoryAddress() {
+        public MemoryAddress memoryAddress() {
             throw new UnsupportedOperationException();
         }
     }

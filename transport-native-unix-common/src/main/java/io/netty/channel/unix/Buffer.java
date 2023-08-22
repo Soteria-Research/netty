@@ -21,6 +21,8 @@ import io.netty.util.internal.UnstableApi;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 @UnstableApi
 public final class Buffer {
 
@@ -44,7 +46,7 @@ public final class Buffer {
     /**
      * Returns the memory address of the given direct {@link ByteBuffer}.
      */
-    public static long memoryAddress(ByteBuffer buffer) {
+    public static MemoryAddress memoryAddress(ByteBuffer buffer) {
         assert buffer.isDirect();
         if (PlatformDependent.hasUnsafe()) {
             return PlatformDependent.directBufferAddress(buffer);
@@ -62,7 +64,6 @@ public final class Buffer {
         return addressSize0();
     }
 
-    // If Unsafe can not be used we will need to do JNI calls.
     private static native int addressSize0();
-    private static native long memoryAddress0(ByteBuffer buffer);
+    private static native MemoryAddress memoryAddress0(ByteBuffer buffer);
 }

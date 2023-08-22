@@ -561,16 +561,32 @@ public final class PlatformDependent {
         return PlatformDependent0.getByte(address);
     }
 
+    public static byte getByte(MemoryAddress address, int offset) {
+        return PlatformDependent0.getByte(address, offset);
+    }
+
     public static short getShort(MemoryAddress address) {
         return PlatformDependent0.getShort(address);
+    }
+
+    public static short getShort(MemoryAddress address, int offset) {
+        return PlatformDependent0.getShort(address, offset);
     }
 
     public static int getInt(MemoryAddress address) {
         return PlatformDependent0.getInt(address);
     }
 
+    public static int getInt(MemoryAddress address, int offset) {
+        return PlatformDependent0.getInt(address, offset);
+    }
+
     public static long getLong(MemoryAddress address) {
         return PlatformDependent0.getLong(address);
+    }
+
+    public static long getLong(MemoryAddress address, int offset) {
+        return PlatformDependent0.getLong(address, offset);
     }
 
     public static byte getByte(byte[] data, int index) {
@@ -701,16 +717,32 @@ public final class PlatformDependent {
         PlatformDependent0.putByte(address, value);
     }
 
+    public static void putByte(MemoryAddress address, int offset, byte value) {
+        PlatformDependent0.putByte(address, offset, value);
+    }
+
     public static void putShort(MemoryAddress address, short value) {
         PlatformDependent0.putShort(address, value);
+    }
+
+    public static void putShort(MemoryAddress address, int offset, short value) {
+        PlatformDependent0.putShort(address, offset, value);
     }
 
     public static void putInt(MemoryAddress address, int value) {
         PlatformDependent0.putInt(address, value);
     }
 
+    public static void putInt(MemoryAddress address, int offset, int value) {
+        PlatformDependent0.putInt(address, offset, value);
+    }
+
     public static void putLong(MemoryAddress address, long value) {
         PlatformDependent0.putLong(address, value);
+    }
+
+    public static void putLong(MemoryAddress address, int offset, long value) {
+        PlatformDependent0.putLong(address, offset, value);
     }
 
     public static void putByte(byte[] data, int index, byte value) {
@@ -827,7 +859,7 @@ public final class PlatformDependent {
         if (hasUnsafe()) {
             MemoryAddress address = directBufferAddress(buffer);
             long aligned = align(address.getRawAddress(), alignment);
-            buffer.position((int) (aligned - address));
+            buffer.position((int) (aligned - address.getRawAddress()));
             return buffer.slice();
         }
         // We don't have enough information to be able to align any buffers.

@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 public class EmptyByteBufTest {
 
     @Test
@@ -84,7 +86,11 @@ public class EmptyByteBufTest {
     public void testMemoryAddress() {
         EmptyByteBuf empty = new EmptyByteBuf(UnpooledByteBufAllocator.DEFAULT);
         if (empty.hasMemoryAddress()) {
-            assertThat(empty.memoryAddress(), is(not(0L)));
+            if (empty.memoryAddress() != null) {
+                assertThat(empty.memoryAddress().getRawAddress(), is(not(0L)));
+            } else {
+                fail("EmptyByteBufTest.testMemoryAddress - the MemoryAddress object is null");
+            }
         } else {
             try {
                 empty.memoryAddress();

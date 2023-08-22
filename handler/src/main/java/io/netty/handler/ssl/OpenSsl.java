@@ -46,6 +46,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.handler.ssl.SslUtils.*;
 
 /**
@@ -671,7 +673,7 @@ public final class OpenSsl {
         return USE_KEYMANAGER_FACTORY;
     }
 
-    static long memoryAddress(ByteBuf buf) {
+    static MemoryAddress memoryAddress(ByteBuf buf) {
         assert buf.isDirect();
         return buf.hasMemoryAddress() ? buf.memoryAddress() :
                 // Use internalNioBuffer to reduce object creation.

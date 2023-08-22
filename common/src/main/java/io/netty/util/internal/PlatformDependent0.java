@@ -27,6 +27,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+
 import jdk.internal.vm.memory.MemoryAddress;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
@@ -220,7 +221,8 @@ final class PlatformDependent0 {
                             final long offset = finalUnsafe.objectFieldOffset(field);
                             final MemoryAddress memoryAddress = (MemoryAddress) finalUnsafe.getObject(direct, offset);
 
-                            // if direct really is a direct buffer, the neither the MemoryAddress object or the pointer it wraps will be null
+                            // if direct really is a direct buffer, the neither the MemoryAddress object 
+                            // or the pointer it wraps will be null
                             if (MemoryAddress.isNull(memoryAddress)) {
                                 return null;
                             }
@@ -285,7 +287,8 @@ final class PlatformDependent0 {
                             @Override
                             public Object run() {
                                 try {
-                                    // MOJO - fetching the constructor "private Direct$Type$Buffer(MemoryAddress addr, int cap)"
+                                    // MOJO - fetching the constructor: 
+                                    //        "private Direct$Type$Buffer(MemoryAddress addr, int cap)"
                                     //        from src/java.base/share/classes/java/nio/Direct-X-Buffer.java.template
                                     final Constructor<?> constructor =
                                             direct.getClass().getDeclaredConstructor(MemoryAddress.class, int.class);
@@ -547,7 +550,7 @@ final class PlatformDependent0 {
     }
 
     static ByteBuffer reallocateDirectNoCleaner(ByteBuffer buffer, int capacity) {
-        return newDirectBuffer(UNSAFE.reallocateMemoryObject(directBufferAddress(buffer), capacity), capacity);
+        return newDirectBuffer(UNSAFE.reallocateMemory(directBufferAddress(buffer), capacity), capacity);
     }
 
     static ByteBuffer allocateDirectNoCleaner(int capacity) {
@@ -600,7 +603,7 @@ final class PlatformDependent0 {
     }
 
     static MemoryAddress directBufferAddress(ByteBuffer buffer) {
-        return getMemoryAddress(buffer, MEMORY_ADDRESS_FIELD_OFFSET);
+        return (MemoryAddress) getObject(buffer, MEMORY_ADDRESS_FIELD_OFFSET);
     }
 
     static long byteArrayBaseOffset() {
@@ -628,10 +631,6 @@ final class PlatformDependent0 {
         return UNSAFE.getLong(object, fieldOffset);
     }
 
-    private static MemoryAddress getMemoryAddress(MemoryAddress address, long fieldOffset) {
-        return UNSAFE.getMemoryAddress(address, fieldOffset);
-    }
-
     static long objectFieldOffset(Field field) {
         return UNSAFE.objectFieldOffset(field);
     }
@@ -640,16 +639,32 @@ final class PlatformDependent0 {
         return UNSAFE.getByte(address);
     }
 
+    static byte getByte(MemoryAddress address, int offset) {
+        return UNSAFE.getByte(address, offset);
+    }
+
     static short getShort(MemoryAddress address) {
         return UNSAFE.getShort(address);
+    }
+
+    static short getShort(MemoryAddress address, int offset) {
+        return UNSAFE.getShort(address, offset);
     }
 
     static int getInt(MemoryAddress address) {
         return UNSAFE.getInt(address);
     }
 
+    static int getInt(MemoryAddress address, int offset) {
+        return UNSAFE.getInt(address, offset);
+    }
+
     static long getLong(MemoryAddress address) {
         return UNSAFE.getLong(address);
+    }
+
+    static long getLong(MemoryAddress address, int offset) {
+        return UNSAFE.getLong(address, offset);
     }
 
     static byte getByte(byte[] data, int index) {
@@ -676,8 +691,16 @@ final class PlatformDependent0 {
         return UNSAFE.getIntVolatile(address, 0);
     }
 
+    static int getIntVolatile(MemoryAddress address, int offset) {
+        return UNSAFE.getIntVolatile(address, offset);
+    }
+
     static void putIntOrdered(MemoryAddress adddress, int newValue) {
         UNSAFE.putOrderedInt(adddress, 0, newValue);
+    }
+
+    static void putIntOrdered(MemoryAddress adddress, int offset, int newValue) {
+        UNSAFE.putOrderedInt(adddress, offset, newValue);
     }
 
     static long getLong(byte[] data, int index) {
@@ -692,16 +715,32 @@ final class PlatformDependent0 {
         UNSAFE.putByte(address, value);
     }
 
+    static void putByte(MemoryAddress address, int offset, byte value) {
+        UNSAFE.putByte(address, offset, value);
+    }
+
     static void putShort(MemoryAddress address, short value) {
         UNSAFE.putShort(address, value);
+    }
+
+    static void putShort(MemoryAddress address, int offset, short value) {
+        UNSAFE.putShort(address, offset, value);
     }
 
     static void putInt(MemoryAddress address, int value) {
         UNSAFE.putInt(address, value);
     }
 
+    static void putInt(MemoryAddress address, int offset, int value) {
+        UNSAFE.putInt(address, offset, value);
+    }
+
     static void putLong(MemoryAddress address, long value) {
         UNSAFE.putLong(address, value);
+    }
+
+    static void putLong(MemoryAddress address, int offset, long value) {
+        UNSAFE.putLong(address, offset, value);
     }
 
     static void putByte(byte[] data, int index, byte value) {
@@ -931,11 +970,11 @@ final class PlatformDependent0 {
     }
 
     static void freeMemory(MemoryAddress address) {
-        UNSAFE.freeMemoryObject(address);
+        UNSAFE.freeMemory(address);
     }
 
     static MemoryAddress reallocateMemory(MemoryAddress address, long newSize) {
-        return UNSAFE.reallocateMemoryObject(address, newSize);
+        return UNSAFE.reallocateMemory(address, newSize);
     }
 
     static boolean isAndroid() {
