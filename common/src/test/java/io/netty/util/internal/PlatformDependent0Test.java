@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import java.nio.ByteBuffer;
 import java.security.Permission;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -33,21 +35,11 @@ public class PlatformDependent0Test {
     }
 
     @Test
-    public void testNewDirectBufferNegativeMemoryAddress() {
-        testNewDirectBufferMemoryAddress(-1);
+    public void testNewDirectBufferNullMemoryAddress() {
+        testNewDirectBufferMemoryAddress(null);
     }
 
-    @Test
-    public void testNewDirectBufferNonNegativeMemoryAddress() {
-        testNewDirectBufferMemoryAddress(10);
-    }
-
-    @Test
-    public void testNewDirectBufferZeroMemoryAddress() {
-        PlatformDependent0.newDirectBuffer(0, 10);
-    }
-
-    private static void testNewDirectBufferMemoryAddress(long address) {
+    private static void testNewDirectBufferMemoryAddress(MemoryAddress address) {
         assumeTrue(PlatformDependent0.hasDirectBufferNoCleanerConstructor());
 
         int capacity = 10;
