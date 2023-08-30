@@ -52,6 +52,8 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.concurrent.TimeUnit;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.channel.internal.ChannelUtils.WRITE_STATUS_SNDBUF_FULL;
 import static io.netty.channel.unix.UnixChannelUtil.computeRemoteAddr;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
@@ -385,7 +387,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
             throws IOException {
         assert !(fastOpen && remoteAddress == null) : "fastOpen requires a remote address";
         if (data.hasMemoryAddress()) {
-            long memoryAddress = data.memoryAddress();
+            MemoryAddress memoryAddress = data.memoryAddress();
             if (remoteAddress == null) {
                 return socket.sendAddress(memoryAddress, data.readerIndex(), data.writerIndex());
             }

@@ -227,9 +227,9 @@ public final class Native {
     }
 
     private static native long epollWait0(
-            int efd, long address, int len, int timerFd, int timeoutSec, int timeoutNs, long millisThreshold);
-    private static native int epollWait(int efd, long address, int len, int timeout);
-    private static native int epollBusyWait0(int efd, long address, int len);
+            int efd, MemoryAddress address, int len, int timerFd, int timeoutSec, int timeoutNs, long millisThreshold);
+    private static native int epollWait(int efd, MemoryAddress address, int len, int timeout);
+    private static native int epollBusyWait0(int efd, MemoryAddress address, int len);
 
     public static void epollCtlAdd(int efd, final int fd, final int flags) throws IOException {
         int res = epollCtlAdd0(efd, fd, flags);

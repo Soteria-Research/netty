@@ -249,8 +249,8 @@ static jint netty_epoll_native_epollCreate(JNIEnv* env, jclass clazz) {
     return efd;
 }
 
-static jint netty_epoll_native_epollWait(JNIEnv* env, jclass clazz, jint efd, jlong address, jint len, jint timeout) {
-    struct epoll_event *ev = (struct epoll_event*) (intptr_t) address;
+static jint netty_epoll_native_epollWait(JNIEnv* env, jclass clazz, jint efd, jobject address, jint len, jint timeout) {
+    struct epoll_event *ev = (struct epoll_event*) (*env)->GetMemoryAddress(env, address);
     int result, err;
 
     do {
@@ -265,7 +265,7 @@ static jint netty_epoll_native_epollWait(JNIEnv* env, jclass clazz, jint efd, jl
 // This needs to be consistent with Native.java
 #define EPOLL_WAIT_RESULT(V, ARM_TIMER)  ((jlong) ((uint64_t) ((uint32_t) V) << 32 | ARM_TIMER))
 
-static jlong netty_epoll_native_epollWait0(JNIEnv* env, jclass clazz, jint efd, jlong address, jint len, jint timerFd, jint tvSec, jint tvNsec, jlong millisThreshold) {
+static jlong netty_epoll_native_epollWait0(JNIEnv* env, jclass clazz, jint efd, jobject address, jint len, jint timerFd, jint tvSec, jint tvNsec, jlong millisThreshold) {
     // only reschedule the timer if there is a newer event.
     // -1 is a special value used by EpollEventLoop.
     uint32_t armTimer = millisThreshold <= 0 ? 1 : 0;
@@ -278,7 +278,7 @@ static jlong netty_epoll_native_epollWait0(JNIEnv* env, jclass clazz, jint efd, 
                 // We have epoll_pwait2(...) and it is supported, this means we can just pass in the itimerspec directly and not need an
                 // extra syscall even for very small timeouts.
                 struct timespec ts = { tvSec, tvNsec };
-                struct epoll_event *ev = (struct epoll_event*) (intptr_t) address;
+                struct epoll_event *ev = (struct epoll_event*) (*env)->GetMemoryAddress(env, address);
                 int result, err;
                 do {
                     result = epoll_pwait2(efd, ev, len, &ts, NULL);
@@ -324,8 +324,8 @@ static inline void cpu_relax() {
 #endif
 }
 
-static jint netty_epoll_native_epollBusyWait0(JNIEnv* env, jclass clazz, jint efd, jlong address, jint len) {
-    struct epoll_event *ev = (struct epoll_event*) (intptr_t) address;
+static jint netty_epoll_native_epollBusyWait0(JNIEnv* env, jclass clazz, jint efd, jobject address, jint len) {
+    struct epoll_event *ev = (struct epoll_event*) (*env)->GetMemoryAddress(env, address);
     int result, err;
 
     // Zeros = poll (aka return immediately).

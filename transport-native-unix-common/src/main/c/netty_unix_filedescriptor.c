@@ -109,16 +109,16 @@ static jint netty_unix_filedescriptor_open(JNIEnv* env, jclass clazz, jstring pa
 
 static jint netty_unix_filedescriptor_write(JNIEnv* env, jclass clazz, jint fd, jobject jbuffer, jint pos, jint limit) {
     // We check that GetDirectBufferAddress will not return NULL in OnLoad
-    return _write(env, clazz, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit);
+    return _write(env, clazz, fd, (*env)->GetDirectBufferMemoryAddress(env, jbuffer), pos, limit);
 }
 
-static jint netty_unix_filedescriptor_writeAddress(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
-    return _write(env, clazz, fd, (void*) (intptr_t) address, pos, limit);
+static jint netty_unix_filedescriptor_writeAddress(JNIEnv* env, jclass clazz, jint fd, jobject address, jint pos, jint limit) {
+    return _write(env, clazz, fd, (*env)->GetMemoryAddress(env, address), pos, limit);
 }
 
 
-static jlong netty_unix_filedescriptor_writevAddresses(JNIEnv* env, jclass clazz, jint fd, jlong memoryAddress, jint length) {
-    struct iovec* iov = (struct iovec*) (intptr_t) memoryAddress;
+static jlong netty_unix_filedescriptor_writevAddresses(JNIEnv* env, jclass clazz, jint fd, jobject memoryAddress, jint length) {
+    struct iovec* iov = (struct iovec*) (*env)->GetMemoryAddress(env, memoryAddress);
     return _writev(env, clazz, fd, iov, length);
 }
 
@@ -228,8 +228,8 @@ static jint netty_unix_filedescriptor_read(JNIEnv* env, jclass clazz, jint fd, j
     return _read(env, clazz, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit);
 }
 
-static jint netty_unix_filedescriptor_readAddress(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
-    return _read(env, clazz, fd, (void*) (intptr_t) address, pos, limit);
+static jint netty_unix_filedescriptor_readAddress(JNIEnv* env, jclass clazz, jint fd, MemoryAddress address, jint pos, jint limit) {
+    return _read(env, clazz, fd, (env*)->GetMemoryAddress(env, address), pos, limit);
 }
 
 static jlong netty_unix_filedescriptor_newPipe(JNIEnv* env, jclass clazz) {
@@ -268,11 +268,11 @@ static const JNINativeMethod method_table[] = {
   { "close", "(I)I", (void *) netty_unix_filedescriptor_close },
   { "open", "(Ljava/lang/String;)I", (void *) netty_unix_filedescriptor_open },
   { "write", "(ILjava/nio/ByteBuffer;II)I", (void *) netty_unix_filedescriptor_write },
-  { "writeAddress", "(IJII)I", (void *) netty_unix_filedescriptor_writeAddress },
-  { "writevAddresses", "(IJI)J", (void *) netty_unix_filedescriptor_writevAddresses },
+  { "writeAddress", "(ILjdk/internal/vm/memory/MemoryAddress;II)I", (void *) netty_unix_filedescriptor_writeAddress },
+  { "writevAddresses", "(ILjdk/internal/vm/memory/MemoryAddress;I)J", (void *) netty_unix_filedescriptor_writevAddresses },
   { "writev", "(I[Ljava/nio/ByteBuffer;IIJ)J", (void *) netty_unix_filedescriptor_writev },
   { "read", "(ILjava/nio/ByteBuffer;II)I", (void *) netty_unix_filedescriptor_read },
-  { "readAddress", "(IJII)I", (void *) netty_unix_filedescriptor_readAddress },
+  { "readAddress", "(ILjdk/internal/vm/memory/MemoryAddress;II)I", (void *) netty_unix_filedescriptor_readAddress },
   { "newPipe", "()J", (void *) netty_unix_filedescriptor_newPipe }
 };
 static const jint method_table_size = sizeof(method_table) / sizeof(method_table[0]);

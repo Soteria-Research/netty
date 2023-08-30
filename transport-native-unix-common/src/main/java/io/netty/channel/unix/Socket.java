@@ -29,6 +29,8 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.channel.unix.Errors.ERRNO_EAGAIN_NEGATIVE;
 import static io.netty.channel.unix.Errors.ERRNO_EINPROGRESS_NEGATIVE;
 import static io.netty.channel.unix.Errors.ERRNO_EWOULDBLOCK_NEGATIVE;
@@ -163,12 +165,12 @@ public class Socket extends FileDescriptor {
         return ioResult("sendToDomainSocket", res);
     }
 
-    public final int sendToAddress(long memoryAddress, int pos, int limit, InetAddress addr, int port)
+    public final int sendToAddress(MemoryAddress memoryAddress, int pos, int limit, InetAddress addr, int port)
             throws IOException {
         return sendToAddress(memoryAddress, pos, limit, addr, port, false);
     }
 
-    public final int sendToAddress(long memoryAddress, int pos, int limit, InetAddress addr, int port,
+    public final int sendToAddress(MemoryAddress memoryAddress, int pos, int limit, InetAddress addr, int port,
                                    boolean fastOpen) throws IOException {
         // just duplicate the toNativeInetAddress code here to minimize object creation as this method is expected
         // to be called frequently
@@ -199,7 +201,7 @@ public class Socket extends FileDescriptor {
         return ioResult("sendToAddress", res);
     }
 
-    public final int sendToAddressDomainSocket(long memoryAddress, int pos, int limit, byte[] path) throws IOException {
+    public final int sendToAddressDomainSocket(MemoryAddress memoryAddress, int pos, int limit, byte[] path) throws IOException {
         int res = sendToAddressDomainSocket(fd, memoryAddress, pos, limit, path);
         if (res >= 0) {
             return res;
@@ -207,11 +209,11 @@ public class Socket extends FileDescriptor {
         return ioResult("sendToAddressDomainSocket", res);
     }
 
-    public final int sendToAddresses(long memoryAddress, int length, InetAddress addr, int port) throws IOException {
+    public final int sendToAddresses(MemoryAddress memoryAddress, int length, InetAddress addr, int port) throws IOException {
         return sendToAddresses(memoryAddress, length, addr, port, false);
     }
 
-    public final int sendToAddresses(long memoryAddress, int length, InetAddress addr, int port, boolean fastOpen)
+    public final int sendToAddresses(MemoryAddress memoryAddress, int length, InetAddress addr, int port, boolean fastOpen)
             throws IOException {
         // just duplicate the toNativeInetAddress code here to minimize object creation as this method is expected
         // to be called frequently
@@ -242,7 +244,7 @@ public class Socket extends FileDescriptor {
         return ioResult("sendToAddresses", res);
     }
 
-    public final int sendToAddressesDomainSocket(long memoryAddress, int length, byte[] path) throws IOException {
+    public final int sendToAddressesDomainSocket(MemoryAddress memoryAddress, int length, byte[] path) throws IOException {
         int res = sendToAddressesDomainSocket(fd, memoryAddress, length, path);
         if (res >= 0) {
             return res;
@@ -254,7 +256,7 @@ public class Socket extends FileDescriptor {
         return recvFrom(fd, buf, pos, limit);
     }
 
-    public final DatagramSocketAddress recvFromAddress(long memoryAddress, int pos, int limit) throws IOException {
+    public final DatagramSocketAddress recvFromAddress(MemoryAddress memoryAddress, int pos, int limit) throws IOException {
         return recvFromAddress(fd, memoryAddress, pos, limit);
     }
 
@@ -263,7 +265,7 @@ public class Socket extends FileDescriptor {
         return recvFromDomainSocket(fd, buf, pos, limit);
     }
 
-    public final DomainDatagramSocketAddress recvFromAddressDomainSocket(long memoryAddress, int pos, int limit)
+    public final DomainDatagramSocketAddress recvFromAddressDomainSocket(MemoryAddress memoryAddress, int pos, int limit)
             throws IOException {
         return recvFromAddressDomainSocket(fd, memoryAddress, pos, limit);
     }
@@ -298,7 +300,7 @@ public class Socket extends FileDescriptor {
         return ioResult("send", res);
     }
 
-    public int sendAddress(long address, int pos, int limit) throws IOException {
+    public int sendAddress(jobject address, int pos, int limit) throws IOException {
         int res = sendAddress(intValue(), address, pos, limit);
         if (res >= 0) {
             return res;
@@ -648,35 +650,35 @@ public class Socket extends FileDescriptor {
     private static native byte[] localDomainSocketAddress(int fd);
 
     private static native int send(int fd, ByteBuffer buf, int pos, int limit);
-    private static native int sendAddress(int fd, long address, int pos, int limit);
+    private static native int sendAddress(int fd, MemoryAddress address, int pos, int limit);
     private static native int recv(int fd, ByteBuffer buf, int pos, int limit);
 
-    private static native int recvAddress(int fd, long address, int pos, int limit);
+    private static native int recvAddress(int fd, MemoryAddress address, int pos, int limit);
 
     private static native int sendTo(
             int fd, boolean ipv6, ByteBuffer buf, int pos, int limit, byte[] address, int scopeId, int port,
             int flags);
 
     private static native int sendToAddress(
-            int fd, boolean ipv6, long memoryAddress, int pos, int limit, byte[] address, int scopeId, int port,
+            int fd, boolean ipv6, MemoryAddress memoryAddress, int pos, int limit, byte[] address, int scopeId, int port,
             int flags);
 
     private static native int sendToAddresses(
-            int fd, boolean ipv6, long memoryAddress, int length, byte[] address, int scopeId, int port,
+            int fd, boolean ipv6, MemoryAddress memoryAddress, int length, byte[] address, int scopeId, int port,
             int flags);
 
     private static native int sendToDomainSocket(int fd, ByteBuffer buf, int pos, int limit, byte[] path);
-    private static native int sendToAddressDomainSocket(int fd, long memoryAddress, int pos, int limit, byte[] path);
-    private static native int sendToAddressesDomainSocket(int fd, long memoryAddress, int length, byte[] path);
+    private static native int sendToAddressDomainSocket(int fd, MemoryAddress memoryAddress, int pos, int limit, byte[] path);
+    private static native int sendToAddressesDomainSocket(int fd, MemoryAddress memoryAddress, int length, byte[] path);
 
     private static native DatagramSocketAddress recvFrom(
             int fd, ByteBuffer buf, int pos, int limit) throws IOException;
     private static native DatagramSocketAddress recvFromAddress(
-            int fd, long memoryAddress, int pos, int limit) throws IOException;
+            int fd, MemoryAddress memoryAddress, int pos, int limit) throws IOException;
     private static native DomainDatagramSocketAddress recvFromDomainSocket(
             int fd, ByteBuffer buf, int pos, int limit) throws IOException;
     private static native DomainDatagramSocketAddress recvFromAddressDomainSocket(
-            int fd, long memoryAddress, int pos, int limit) throws IOException;
+            int fd, MemoryAddress memoryAddress, int pos, int limit) throws IOException;
     private static native int recvFd(int fd);
     private static native int sendFd(int socketFd, int fd);
     private static native int msgFastopen();

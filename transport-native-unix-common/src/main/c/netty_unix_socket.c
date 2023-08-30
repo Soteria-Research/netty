@@ -466,8 +466,8 @@ static jint netty_unix_socket_send(JNIEnv* env, jclass clazz, jint fd, jobject j
     return _send(env, clazz, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit);
 }
 
-static jint netty_unix_socket_sendAddress(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
-    return _send(env, clazz, fd, (void*) (intptr_t) address, pos, limit);
+static jint netty_unix_socket_sendAddress(JNIEnv* env, jclass clazz, jint fd, jobject address, jint pos, jint limit) {
+    return _send(env, clazz, fd, (*env)->GetMemoryAddress(env, address), pos, limit);
 }
 
 static jint _recv(JNIEnv* env, jclass clazz, jint fd, void* buffer, jint pos, jint limit) {
@@ -489,9 +489,9 @@ static jint netty_unix_socket_recv(JNIEnv* env, jclass clazz, jint fd, jobject j
     return _recv(env, clazz, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit);
 }
 
-static jint netty_unix_socket_recvAddress(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
+static jint netty_unix_socket_recvAddress(JNIEnv* env, jclass clazz, jint fd, MemoryAddress address, jint pos, jint limit) {
     
-    return _recv(env, clazz, fd, (void*) (intptr_t) address, pos, limit);
+    return _recv(env, clazz, fd, (*env)->GetMemoryAddress(env, address), pos, limit);
 }
 
 void netty_unix_socket_getOptionHandleError(JNIEnv* env, int err) {
@@ -742,11 +742,11 @@ static jint netty_unix_socket_sendTo(JNIEnv* env, jclass clazz, jint fd, jboolea
     return _sendTo(env, fd, ipv6, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit, address, scopeId, port, flags);
 }
 
-static jint netty_unix_socket_sendToAddress(JNIEnv* env, jclass clazz, jint fd, jboolean ipv6, jlong memoryAddress, jint pos, jint limit, jbyteArray address, jint scopeId, jint port, jint flags) {
-    return _sendTo(env, fd, ipv6, (void *) (intptr_t) memoryAddress, pos, limit, address, scopeId, port, flags);
+static jint netty_unix_socket_sendToAddress(JNIEnv* env, jclass clazz, jint fd, jboolean ipv6, jobject memoryAddress, jint pos, jint limit, jbyteArray address, jint scopeId, jint port, jint flags) {
+    return _sendTo(env, fd, ipv6, (*env)->GetMemoryAddress(end, memoryAddress), pos, limit, address, scopeId, port, flags);
 }
 
-static jint netty_unix_socket_sendToAddresses(JNIEnv* env, jclass clazz, jint fd, jboolean ipv6, jlong memoryAddress, jint length, jbyteArray address, jint scopeId, jint port, jint flags) {
+static jint netty_unix_socket_sendToAddresses(JNIEnv* env, jclass clazz, jint fd, jboolean ipv6, jobject memoryAddress, jint length, jbyteArray address, jint scopeId, jint port, jint flags) {
     struct sockaddr_storage addr;
     socklen_t addrSize;
     if (netty_unix_socket_initSockaddr(env, ipv6, address, scopeId, port, &addr, &addrSize) == -1) {
@@ -756,7 +756,7 @@ static jint netty_unix_socket_sendToAddresses(JNIEnv* env, jclass clazz, jint fd
     struct msghdr m = { 0 };
     m.msg_name = (void*) &addr;
     m.msg_namelen = addrSize;
-    m.msg_iov = (struct iovec*) (intptr_t) memoryAddress;
+    m.msg_iov = (struct iovec*) (*env)->GetMemoryAddress(env, memoryAddress);
     m.msg_iovlen = length;
 
     ssize_t res;
@@ -777,11 +777,11 @@ static jint netty_unix_socket_sendToDomainSocket(JNIEnv* env, jclass clazz, jint
     return _sendToDomainSocket(env, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit, socketPath);
 }
 
-static jint netty_unix_socket_sendToAddressDomainSocket(JNIEnv* env, jclass clazz, jint fd, jlong memoryAddress, jint pos, jint limit, jbyteArray socketPath) {
-    return _sendToDomainSocket(env, fd, (void *) (intptr_t) memoryAddress, pos, limit, socketPath);
+static jint netty_unix_socket_sendToAddressDomainSocket(JNIEnv* env, jclass clazz, jint fd, jobject memoryAddress, jint pos, jint limit, jbyteArray socketPath) {
+    return _sendToDomainSocket(env, fd, (*env)->GetMemoryAddress(env, memoryAddress), pos, limit, socketPath);
 }
 
-static jint netty_unix_socket_sendToAddressesDomainSocket(JNIEnv* env, jclass clazz, jint fd, jlong memoryAddress, jint length, jbyteArray socketPath) {
+static jint netty_unix_socket_sendToAddressesDomainSocket(JNIEnv* env, jclass clazz, jint fd, jobject memoryAddress, jint length, jbyteArray socketPath) {
     struct sockaddr_un addr;
     jint socket_path_len;
 
@@ -798,7 +798,7 @@ static jint netty_unix_socket_sendToAddressesDomainSocket(JNIEnv* env, jclass cl
     struct msghdr m = { 0 };
     m.msg_name = (void*) &addr;
     m.msg_namelen = sizeof(struct sockaddr_un);
-    m.msg_iov = (struct iovec*) (intptr_t) memoryAddress;
+    m.msg_iov = (struct iovec*) (*env)->GetMemoryAddress(env, memoryAddress);
     m.msg_iovlen = length;
 
     ssize_t res;
@@ -821,8 +821,8 @@ static jobject netty_unix_socket_recvFrom(JNIEnv* env, jclass clazz, jint fd, jo
     return _recvFrom(env, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit);
 }
 
-static jobject netty_unix_socket_recvFromAddress(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
-    return _recvFrom(env, fd, (void *) (intptr_t) address, pos, limit);
+static jobject netty_unix_socket_recvFromAddress(JNIEnv* env, jclass clazz, jint fd, jobject address, jint pos, jint limit) {
+    return _recvFrom(env, fd, (*env)->GetMemoryAddress(env, address), pos, limit);
 }
 
 static jobject netty_unix_socket_recvFromDomainSocket(JNIEnv* env, jclass clazz, jint fd, jobject jbuffer, jint pos, jint limit) {
@@ -830,8 +830,8 @@ static jobject netty_unix_socket_recvFromDomainSocket(JNIEnv* env, jclass clazz,
     return _recvFromDomainSocket(env, fd, (*env)->GetDirectBufferAddress(env, jbuffer), pos, limit);
 }
 
-static jobject netty_unix_socket_recvFromAddressDomainSocket(JNIEnv* env, jclass clazz, jint fd, jlong address, jint pos, jint limit) {
-    return _recvFromDomainSocket(env, fd, (void *) (intptr_t) address, pos, limit);
+static jobject netty_unix_socket_recvFromAddressDomainSocket(JNIEnv* env, jclass clazz, jint fd, jobject address, jint pos, jint limit) {
+    return _recvFromDomainSocket(env, fd, (*env)->GetMemoryAddress(env, address), pos, limit);
 }
 
 static jint netty_unix_socket_bindDomainSocket(JNIEnv* env, jclass clazz, jint fd, jbyteArray socketPath) {

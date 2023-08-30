@@ -102,7 +102,7 @@ public class FileDescriptor {
         return ioResult("write", res);
     }
 
-    public final int writeAddress(long address, int pos, int limit) throws IOException {
+    public final int writeAddress(MemoryAddress address, int pos, int limit) throws IOException {
         int res = writeAddress(fd, address, pos, limit);
         if (res >= 0) {
             return res;
@@ -118,7 +118,7 @@ public class FileDescriptor {
         return ioResult("writev", (int) res);
     }
 
-    public final long writevAddresses(long memoryAddress, int length) throws IOException {
+    public final long writevAddresses(MemoryAddress memoryAddress, int length) throws IOException {
         long res = writevAddresses(fd, memoryAddress, length);
         if (res >= 0) {
             return res;
@@ -137,7 +137,7 @@ public class FileDescriptor {
         return ioResult("read", res);
     }
 
-    public final int readAddress(long address, int pos, int limit) throws IOException {
+    public final int readAddress(MemoryAddress address, int pos, int limit) throws IOException {
         int res = readAddress(fd, address, pos, limit);
         if (res > 0) {
             return res;
@@ -229,12 +229,12 @@ public class FileDescriptor {
     private static native int close(int fd);
 
     private static native int write(int fd, ByteBuffer buf, int pos, int limit);
-    private static native int writeAddress(int fd, long address, int pos, int limit);
+    private static native int writeAddress(int fd, MemoryAddress address, int pos, int limit);
     private static native long writev(int fd, ByteBuffer[] buffers, int offset, int length, long maxBytesToWrite);
-    private static native long writevAddresses(int fd, long memoryAddress, int length);
+    private static native long writevAddresses(int fd, MemoryAddress memoryAddress, int length);
 
     private static native int read(int fd, ByteBuffer buf, int pos, int limit);
-    private static native int readAddress(int fd, long address, int pos, int limit);
+    private static native int readAddress(int fd, MemoryAddress address, int pos, int limit);
 
     private static native long newPipe();
 }

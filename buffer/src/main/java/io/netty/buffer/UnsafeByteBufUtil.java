@@ -60,7 +60,7 @@ final class UnsafeByteBufUtil {
     static int getUnsignedMedium(MemoryAddress address) {
         if (UNALIGNED) {
             return (PlatformDependent.getByte(address) & 0xff) << 16 |
-                    (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(address + 1)
+                    (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(address, 1)
                                              : Short.reverseBytes(PlatformDependent.getShort(address, 1))) & 0xffff;
         }
         return (PlatformDependent.getByte(address)     & 0xff) << 16 |

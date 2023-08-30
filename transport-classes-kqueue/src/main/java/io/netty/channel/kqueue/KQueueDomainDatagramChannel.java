@@ -129,7 +129,7 @@ public final class KQueueDomainDatagramChannel extends AbstractKQueueDatagramCha
 
         final long writtenBytes;
         if (data.hasMemoryAddress()) {
-            long memoryAddress = data.memoryAddress();
+            MemoryAddress memoryAddress = data.memoryAddress();
             if (remoteAddress == null) {
                 writtenBytes = socket.writeAddress(memoryAddress, data.readerIndex(), data.writerIndex());
             } else {

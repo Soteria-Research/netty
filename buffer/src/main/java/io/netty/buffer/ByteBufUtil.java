@@ -882,7 +882,7 @@ public final class ByteBufUtil {
                 return;
             }
             if (buffer.hasMemoryAddress()) {
-                PlatformDependent.copyMemory(seq.array(), begin, buffer.memoryAddress() + writerIndex, length);
+                PlatformDependent.copyMemory(seq.array(), begin, buffer.memoryAddress().add(writerIndex), length);
                 return;
             }
         }

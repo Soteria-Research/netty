@@ -727,8 +727,8 @@ abstract class PoolArena<T> extends SizeClasses implements PoolArenaMetric {
 
             if (HAS_UNSAFE) {
                 PlatformDependent.copyMemory(
-                        PlatformDependent.directBufferAddress(src) + srcOffset,
-                        PlatformDependent.directBufferAddress(dstBuf.memory) + dstBuf.offset, length);
+                        PlatformDependent.directBufferAddress(src).add(srcOffset),
+                        PlatformDependent.directBufferAddress(dstBuf.memory).add(dstBuf.offset), length);
             } else {
                 // We must duplicate the NIO buffers because they may be accessed by other Netty buffers.
                 src = src.duplicate();

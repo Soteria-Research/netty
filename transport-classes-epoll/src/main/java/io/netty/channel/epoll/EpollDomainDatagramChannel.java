@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.channel.epoll.LinuxSocket.newSocketDomainDgram;
 
 @UnstableApi
@@ -175,7 +177,7 @@ public final class EpollDomainDatagramChannel extends AbstractEpollChannel imple
 
         final long writtenBytes;
         if (data.hasMemoryAddress()) {
-            long memoryAddress = data.memoryAddress();
+            MemoryAddress memoryAddress = data.memoryAddress();
             if (remoteAddress == null) {
                 writtenBytes = socket.sendAddress(memoryAddress, data.readerIndex(), data.writerIndex());
             } else {

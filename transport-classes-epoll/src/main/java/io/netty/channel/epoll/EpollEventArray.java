@@ -19,6 +19,8 @@ import io.netty.channel.unix.Buffer;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.UnstableApi;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -47,7 +49,7 @@ public final class EpollEventArray {
     private static final int EPOLL_DATA_OFFSET = Native.offsetofEpollData();
 
     private ByteBuffer memory;
-    private long memoryAddress;
+    private MemoryAddress memoryAddress;
     private int length;
 
     EpollEventArray(int length) {
@@ -62,7 +64,7 @@ public final class EpollEventArray {
     /**
      * Return the {@code memoryAddress} which points to the start of this {@link EpollEventArray}.
      */
-    long memoryAddress() {
+    MemoryAddress memoryAddress() {
         return memoryAddress;
     }
 

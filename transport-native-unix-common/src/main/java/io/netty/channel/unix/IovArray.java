@@ -222,8 +222,8 @@ public final class IovArray implements MessageProcessor {
     /**
      * Returns the {@code memoryAddress} for the given {@code offset}.
      */
-    public long memoryAddress(int offset) {
-        return memoryAddress + idx(offset);
+    public MemoryAddress memoryAddress(int offset) {
+        return memoryAddress.add(idx(offset));
     }
 
     /**

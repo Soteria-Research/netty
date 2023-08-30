@@ -44,6 +44,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.UnresolvedAddressException;
 
+import jdk.internal.vm.memory.MemoryAddress;
+
 import static io.netty.channel.kqueue.BsdSocket.newSocketDgram;
 
 @UnstableApi
@@ -265,7 +267,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueDatagramChannel i
 
         final long writtenBytes;
         if (data.hasMemoryAddress()) {
-            long memoryAddress = data.memoryAddress();
+            MemoryAddress memoryAddress = data.memoryAddress();
             if (remoteAddress == null) {
                 writtenBytes = socket.writeAddress(memoryAddress, data.readerIndex(), data.writerIndex());
             } else {
