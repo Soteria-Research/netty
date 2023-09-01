@@ -22,7 +22,7 @@
 
 // JNI Registered Methods Begin
 static jobject netty_unix_buffer_memoryAddress0(JNIEnv* env, jclass clazz, jobject buffer) {
-    return (jobject) (*env)->GetDirectBufferMemoryAddress(env, buffer);
+    return (jobject) (*env)->GetDirectBufferMemoryAddressRawPointer(env, buffer);
 }
 
 static jint netty_unix_buffer_addressSize0(JNIEnv* env, jclass clazz) {

@@ -1114,15 +1114,14 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.0</version>
         <configuration>
-          <compilerVersion>1.8</compilerVersion>
-          <fork>true</fork>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
           <debug>true</debug>
-          <optimize>true</optimize>
+          <fork>true</fork>
+          <!-- <optimize>true</optimize> -->
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
-          <compilerArgument>-Xlint:-options</compilerArgument>
+          <!-- <compilerArgument>-Xlint:-options</compilerArgument> -->
           <!-- XXX: maven-release-plugin complains - MRELEASE-715 -->
           <!--
           <compilerArguments>
@@ -1131,8 +1130,13 @@
             <Xlint:deprecation />
           </compilerArguments>
           -->
-          <meminitial>256m</meminitial>
-          <maxmem>1024m</maxmem>
+          <compilerArgs>
+            <arg>-J-XX:-UseCompressedClassPointers</arg>
+            <arg>-J-XX:-UseCompressedOops</arg> 
+            <arg>-J-Xint</arg>
+            <arg>-J-Xms256M</arg>
+            <arg>-J-Xmx1G</arg>  
+          </compilerArgs>
           <excludes>
             <exclude>**/package-info.java</exclude>
           </excludes>
@@ -1383,7 +1387,8 @@
           <useReleaseProfile>false</useReleaseProfile>
           <arguments>-P restricted-release,sonatype-oss-release,full</arguments>
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <allowTimestampedSnapshots>false</allowTimestampedSnapshots>
+          <!-- <allowTimestampedSnapshots>false</allowTimestampedSnapshots> -->
+          <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
           <tagNameFormat>netty-@{project.version}</tagNameFormat>
         </configuration>
         <dependencies>
