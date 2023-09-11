@@ -268,11 +268,11 @@ static const JNINativeMethod method_table[] = {
   { "close", "(I)I", (void *) netty_unix_filedescriptor_close },
   { "open", "(Ljava/lang/String;)I", (void *) netty_unix_filedescriptor_open },
   { "write", "(ILjava/nio/ByteBuffer;II)I", (void *) netty_unix_filedescriptor_write },
-  { "writeAddress", "(ILjdk/internal/vm/memory/MemoryAddress;II)I", (void *) netty_unix_filedescriptor_writeAddress },
-  { "writevAddresses", "(ILjdk/internal/vm/memory/MemoryAddress;I)J", (void *) netty_unix_filedescriptor_writevAddresses },
+  { "writeAddress", "(ILjava/lang/MemoryAddress;II)I", (void *) netty_unix_filedescriptor_writeAddress },
+  { "writevAddresses", "(ILjava/lang/MemoryAddress;I)J", (void *) netty_unix_filedescriptor_writevAddresses },
   { "writev", "(I[Ljava/nio/ByteBuffer;IIJ)J", (void *) netty_unix_filedescriptor_writev },
   { "read", "(ILjava/nio/ByteBuffer;II)I", (void *) netty_unix_filedescriptor_read },
-  { "readAddress", "(ILjdk/internal/vm/memory/MemoryAddress;II)I", (void *) netty_unix_filedescriptor_readAddress },
+  { "readAddress", "(ILjava/lang/MemoryAddress;II)I", (void *) netty_unix_filedescriptor_readAddress },
   { "newPipe", "()J", (void *) netty_unix_filedescriptor_newPipe }
 };
 static const jint method_table_size = sizeof(method_table) / sizeof(method_table[0]);

@@ -149,6 +149,7 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-common</artifactId>
         <version>${project.version}</version>
+      <!-- <version>4.1.94.Final-SNAPSHOT-CHERI</version> -->
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>

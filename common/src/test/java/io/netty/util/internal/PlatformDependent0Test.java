@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.ByteBuffer;
 import java.security.Permission;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;

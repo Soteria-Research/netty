@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.channel.epoll.LinuxSocket.newSocketDomainDgram;
 

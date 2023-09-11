@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 

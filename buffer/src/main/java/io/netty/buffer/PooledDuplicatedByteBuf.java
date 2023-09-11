@@ -29,7 +29,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 final class PooledDuplicatedByteBuf extends AbstractPooledDerivedByteBuf {
 

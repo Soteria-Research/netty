@@ -32,7 +32,7 @@ static void netty_kqueue_eventarray_evSet(JNIEnv* env, jclass clzz, jobject keve
 
 // JNI Method Registration Table Begin
 static const JNINativeMethod fixed_method_table[] = {
-  { "evSet", "(Ljdk/internal/vm/memory/MemoryAddressISSI)V", (void *) netty_kqueue_eventarray_evSet }
+  { "evSet", "(Ljava/lang/MemoryAddressISSI)V", (void *) netty_kqueue_eventarray_evSet }
 };
 static const jint fixed_method_table_size = sizeof(fixed_method_table) / sizeof(fixed_method_table[0]);
 

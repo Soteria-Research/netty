@@ -20,7 +20,7 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.channel.unix.Limits.SIZEOF_JLONG;
 import static io.netty.util.internal.ObjectUtil.checkPositive;

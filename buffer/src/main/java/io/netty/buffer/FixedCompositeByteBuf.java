@@ -29,7 +29,7 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.util.Collections;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 /**
  * {@link ByteBuf} implementation which allows to wrap an array of {@link ByteBuf} in a read-only mode.

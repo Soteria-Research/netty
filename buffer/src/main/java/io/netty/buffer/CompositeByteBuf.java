@@ -39,7 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 

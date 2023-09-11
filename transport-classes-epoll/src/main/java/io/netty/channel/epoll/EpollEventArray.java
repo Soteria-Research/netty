@@ -19,7 +19,7 @@ import io.netty.channel.unix.Buffer;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.UnstableApi;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import java.nio.ByteBuffer;
 

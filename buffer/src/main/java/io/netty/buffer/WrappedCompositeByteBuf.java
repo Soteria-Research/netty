@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 class WrappedCompositeByteBuf extends CompositeByteBuf {
 

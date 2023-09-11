@@ -29,7 +29,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.channel.unix.Limits.UIO_MAX_IOV;
 import static io.netty.channel.unix.NativeInetAddress.copyIpv4MappedIpv6Address;

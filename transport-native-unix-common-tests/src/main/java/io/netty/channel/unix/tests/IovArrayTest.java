@@ -22,7 +22,7 @@ import io.netty.buffer.UnpooledDirectByteBuf;
 import io.netty.channel.unix.IovArray;
 import org.junit.jupiter.api.Test;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

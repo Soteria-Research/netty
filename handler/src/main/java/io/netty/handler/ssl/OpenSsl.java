@@ -46,7 +46,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.handler.ssl.SslUtils.*;
 

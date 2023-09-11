@@ -19,7 +19,7 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 final class WrappedUnpooledUnsafeDirectByteBuf extends UnpooledUnsafeDirectByteBuf {
 

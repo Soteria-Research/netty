@@ -21,7 +21,7 @@ import io.netty.util.internal.UnstableApi;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 @UnstableApi
 public final class Buffer {

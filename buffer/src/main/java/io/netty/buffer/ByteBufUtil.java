@@ -45,7 +45,7 @@ import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
 import java.util.Locale;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 
 import static io.netty.util.internal.MathUtil.isOutOfBounds;

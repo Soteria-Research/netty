@@ -18,7 +18,7 @@ package io.netty.buffer;
 
 import io.netty.util.internal.PlatformDependent;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 /**
  * Special {@link SwappedByteBuf} for {@link ByteBuf}s that are backed by a {@code memoryAddress}.

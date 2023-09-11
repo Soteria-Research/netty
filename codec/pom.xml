@@ -36,17 +36,17 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>netty-common</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-CHERI</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-CHERI</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-CHERI</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -87,6 +87,7 @@
       <groupId>com.github.luben</groupId>
       <artifactId>zstd-jni</artifactId>
       <optional>true</optional>
+      <version>1.5.5-5-CHERI</version>
     </dependency>
     <dependency>
       <groupId>com.aayushatharva.brotli4j</groupId>

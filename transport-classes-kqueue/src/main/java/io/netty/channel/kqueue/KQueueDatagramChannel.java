@@ -44,7 +44,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.UnresolvedAddressException;
 
-import jdk.internal.vm.memory.MemoryAddress;
+import java.lang.MemoryAddress;
 
 import static io.netty.channel.kqueue.BsdSocket.newSocketDgram;
 

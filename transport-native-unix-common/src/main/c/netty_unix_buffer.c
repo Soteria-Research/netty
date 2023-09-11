@@ -33,7 +33,7 @@ static jint netty_unix_buffer_addressSize0(JNIEnv* env, jclass clazz) {
 
 // JNI Method Registration Table Begin
 static const JNINativeMethod statically_referenced_fixed_method_table[] = {
-  { "memoryAddress0", "(Ljava/nio/ByteBuffer;)Ljdk/internal/vm/memory/MemoryAddress", (jobject) netty_unix_buffer_memoryAddress0 },
+  { "memoryAddress0", "(Ljava/nio/ByteBuffer;)Ljava/lang/MemoryAddress", (jobject) netty_unix_buffer_memoryAddress0 },
   { "addressSize0", "()I", (void *) netty_unix_buffer_addressSize0 }
 };
 static const jint statically_referenced_fixed_method_table_size = sizeof(statically_referenced_fixed_method_table) / sizeof(statically_referenced_fixed_method_table[0]);
