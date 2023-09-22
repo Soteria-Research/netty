@@ -19,8 +19,6 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
-import java.lang.MemoryAddress;
-
 final class WrappedUnpooledUnsafeDirectByteBuf extends UnpooledUnsafeDirectByteBuf {
 
     WrappedUnpooledUnsafeDirectByteBuf(ByteBufAllocator alloc, MemoryAddress memoryAddress, int size, boolean doFree) {

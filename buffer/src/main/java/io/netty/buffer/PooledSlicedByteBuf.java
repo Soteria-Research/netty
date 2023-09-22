@@ -29,8 +29,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
-import java.lang.MemoryAddress;
-
 import static io.netty.buffer.AbstractUnpooledSlicedByteBuf.checkSliceOutOfBounds;
 
 final class PooledSlicedByteBuf extends AbstractPooledDerivedByteBuf {

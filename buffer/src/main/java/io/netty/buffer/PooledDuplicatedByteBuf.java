@@ -29,8 +29,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
-import java.lang.MemoryAddress;
-
 final class PooledDuplicatedByteBuf extends AbstractPooledDerivedByteBuf {
 
     private static final ObjectPool<PooledDuplicatedByteBuf> RECYCLER = ObjectPool.newPool(

@@ -20,8 +20,6 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
-import java.lang.MemoryAddress;
-
 /**
  * Represents an array of kevent structures, backed by offheap memory.
  *

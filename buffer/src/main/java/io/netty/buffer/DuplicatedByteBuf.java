@@ -26,8 +26,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 
-import java.lang.MemoryAddress;
-
 /**
  * A derived buffer which simply forwards all data access requests to its
  * parent.  It is recommended to use {@link ByteBuf#duplicate()} instead

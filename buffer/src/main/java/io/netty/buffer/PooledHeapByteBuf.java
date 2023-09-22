@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-import java.lang.MemoryAddress;
-
 class PooledHeapByteBuf extends PooledByteBuf<byte[]> {
 
     private static final ObjectPool<PooledHeapByteBuf> RECYCLER = ObjectPool.newPool(

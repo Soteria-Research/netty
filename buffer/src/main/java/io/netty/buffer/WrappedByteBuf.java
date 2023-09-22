@@ -30,8 +30,6 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 
-import java.lang.MemoryAddress;
-
 /**
  * Wraps another {@link ByteBuf}.
  *

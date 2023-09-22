@@ -29,8 +29,6 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
-import java.lang.MemoryAddress;
-
 class WrappedCompositeByteBuf extends CompositeByteBuf {
 
     private final CompositeByteBuf wrapped;

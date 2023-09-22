@@ -34,8 +34,6 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 
-import java.lang.MemoryAddress;
-
 /**
  * An empty {@link ByteBuf} whose capacity and maximum capacity are all {@code 0}.
  */

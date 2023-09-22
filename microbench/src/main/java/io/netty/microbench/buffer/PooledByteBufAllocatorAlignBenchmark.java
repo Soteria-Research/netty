@@ -22,8 +22,6 @@ import io.netty.microbench.util.AbstractMicrobenchmark;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import java.lang.MemoryAddress;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;

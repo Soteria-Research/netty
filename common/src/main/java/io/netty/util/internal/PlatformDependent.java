@@ -60,8 +60,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.lang.MemoryAddress;
-
 import static io.netty.util.internal.PlatformDependent0.HASH_CODE_ASCII_SEED;
 import static io.netty.util.internal.PlatformDependent0.HASH_CODE_C1;
 import static io.netty.util.internal.PlatformDependent0.HASH_CODE_C2;

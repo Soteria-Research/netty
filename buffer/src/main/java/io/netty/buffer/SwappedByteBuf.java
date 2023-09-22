@@ -28,8 +28,6 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 
-import java.lang.MemoryAddress;
-
 /**
  * Wrapper which swap the {@link ByteOrder} of a {@link ByteBuf}.
  *

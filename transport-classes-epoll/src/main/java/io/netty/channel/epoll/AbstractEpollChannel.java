@@ -52,8 +52,6 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.concurrent.TimeUnit;
 
-import java.lang.MemoryAddress;
-
 import static io.netty.channel.internal.ChannelUtils.WRITE_STATUS_SNDBUF_FULL;
 import static io.netty.channel.unix.UnixChannelUtil.computeRemoteAddr;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;

@@ -21,8 +21,6 @@ import io.netty.util.internal.PlatformDependent;
 
 import java.nio.ByteBuffer;
 
-import java.lang.MemoryAddress;
-
 
 /**
  * Read-only ByteBuf which wraps a read-only direct ByteBuffer and use unsafe for best performance.

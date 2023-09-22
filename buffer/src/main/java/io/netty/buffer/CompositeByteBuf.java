@@ -39,8 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import java.lang.MemoryAddress;
-
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
