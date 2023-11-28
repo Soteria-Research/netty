@@ -610,12 +610,13 @@ final class UnsafeByteBufUtil {
 
     private static void getBytes(MemoryAddress inAddr, byte[] in, int inOffset, int inLen, OutputStream out, int outLen)
             throws IOException {
+        long inAddrOffset = 0;
         do {
             int len = Math.min(inLen, outLen);
-            PlatformDependent.copyMemory(inAddr, in, inOffset, len);
+            PlatformDependent.copyMemory(inAddr, inAddrOffset, in, inOffset, len);
             out.write(in, inOffset, len);
             outLen -= len;
-            inAddr = inAddr.add(len);
+            inAddrOffset += len;
         } while (outLen > 0);
     }
 
