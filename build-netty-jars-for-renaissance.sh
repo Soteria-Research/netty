@@ -34,37 +34,37 @@ mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -Dartif
 	-Dfile=/home/woodhamc/netty/buffer/target/netty-buffer-$NETTY_VERSION.jar
 
 
-# package and install resolver
-echo ">>>>>>>>    Stage 4.1 - mvn package resolver"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl resolver
-echo ">>>>>>>>    Stage 4.2 - mvn install and rename resolver"
-mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-resolver \
-	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
-	-Dfile=/home/woodhamc/netty/resolver/target/netty-resolver-$NETTY_VERSION.jar
+# # package and install resolver
+# echo ">>>>>>>>    Stage 4.1 - mvn package resolver"
+# mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl resolver
+# echo ">>>>>>>>    Stage 4.2 - mvn install and rename resolver"
+# mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-resolver \
+# 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
+# 	-Dfile=/home/woodhamc/netty/resolver/target/netty-resolver-$NETTY_VERSION.jar
 
-# package and install transport
-echo ">>>>>>>>    Stage 5.1 - mvn package transport"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl transport
-echo ">>>>>>>>    Stage 5.2 - mvn install and rename transport"
-mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport \
-	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
-	-Dfile=/home/woodhamc/netty/transport/target/netty-transport-$NETTY_VERSION.jar
+# # package and install transport
+# echo ">>>>>>>>    Stage 5.1 - mvn package transport"
+# mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl transport
+# echo ">>>>>>>>    Stage 5.2 - mvn install and rename transport"
+# mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport \
+# 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
+# 	-Dfile=/home/woodhamc/netty/transport/target/netty-transport-$NETTY_VERSION.jar
 
-#### NOTE - NEED TO BUILD AND LOCALLY INSTALL INTO .m2 THE PORTED VERSION OF ZSTD-JNI
+# #### NOTE - NEED TO BUILD AND LOCALLY INSTALL INTO .m2 THE PORTED VERSION OF ZSTD-JNI
 
-# package and install codec
-echo ">>>>>>>>    Stage 6.1 - mvn package codec"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl codec
-echo ">>>>>>>>    Stage 6.2 - mvn install and rename codec"
-mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-codec \
-	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
-	-Dfile=/home/woodhamc/netty/codec/target/netty-codec-$NETTY_VERSION.jar
+# # package and install codec
+# echo ">>>>>>>>    Stage 6.1 - mvn package codec"
+# mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl codec
+# echo ">>>>>>>>    Stage 6.2 - mvn install and rename codec"
+# mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-codec \
+# 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
+# 	-Dfile=/home/woodhamc/netty/codec/target/netty-codec-$NETTY_VERSION.jar
 
 
-# package and install transport-native-unix-common
-echo ">>>>>>>>    Stage 6.1 - mvn package transport-native-unix-common"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl transport-native-unix-common
-echo ">>>>>>>>    Stage 6.2 - mvn install and rename transport-native-unix-common"
-mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport-native-unix-common \
-	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
-	-Dfile=/home/woodhamc/netty/transport-native-unix-common/target/netty-transport-native-unix-common-$NETTY_VERSION.jar
+# # package and install transport-native-unix-common
+# echo ">>>>>>>>    Stage 6.1 - mvn package transport-native-unix-common"
+# mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl transport-native-unix-common
+# echo ">>>>>>>>    Stage 6.2 - mvn install and rename transport-native-unix-common"
+# mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport-native-unix-common \
+# 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
+# 	-Dfile=/home/woodhamc/netty/transport-native-unix-common/target/netty-transport-native-unix-common-$NETTY_VERSION.jar

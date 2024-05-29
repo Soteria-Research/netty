@@ -154,8 +154,8 @@ public final class IovArray implements MessageProcessor {
 
         if (ADDRESS_SIZE == 16) {
             if (PlatformDependent.hasUnsafe()) {
-                PlatformDependent.putObject(memoryAddress.add(baseOffset), 0, addr);
-                PlatformDependent.putLong(memoryAddress.add(lengthOffset), len);
+                PlatformDependent.putObject(memoryAddress, baseOffset, addr);
+                PlatformDependent.putLong(memoryAddress, lengthOffset, len);
             } else {
                 throw new UnsupportedOperationException("IovArray.add - plaform must have Unsafe for this method to be called");
             }

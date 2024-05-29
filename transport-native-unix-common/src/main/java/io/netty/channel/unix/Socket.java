@@ -298,7 +298,7 @@ public class Socket extends FileDescriptor {
         return ioResult("send", res);
     }
 
-    public int sendAddress(jobject address, int pos, int limit) throws IOException {
+    public int sendAddress(MemoryAddress address, int pos, int limit) throws IOException {
         int res = sendAddress(intValue(), address, pos, limit);
         if (res >= 0) {
             return res;
