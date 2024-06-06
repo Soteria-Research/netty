@@ -1027,7 +1027,7 @@ public final class ByteBufUtil {
         return writerIndex - oldWriterIndex;
     }
 
-        // unsafe Fast-Path implementation - for buffer + (long) offset
+    // unsafe Fast-Path implementation - for buffer + (long) offset
     private static int unsafeWriteUtf8(byte[] buffer, long memoryOffset, int writerIndex,
                                        CharSequence seq, int start, int end) {
         assert !(seq instanceof AsciiString);
@@ -1119,7 +1119,7 @@ public final class ByteBufUtil {
                 PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (c & 0x3f)));
             }
         }
-        return (int) (writerAddress.getRawAddress() + writerOffset - oldWriterAddress.getRawAddress());
+        return (int) ((writerAddress.getRawAddress() + writerOffset) - oldWriterAddress.getRawAddress());
     }
 
     /**

@@ -17,7 +17,7 @@ echo ">>>>>>>>    Stage 1 - mvn clean"
 mvn clean
 
 
-# # package and install netty-common
+# package and install netty-common
 echo ">>>>>>>>    Stage 2.1 - mvn package common"
 mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl common
 echo ">>>>>>>>    Stage 2.2 - mvn install and rename common"
@@ -44,6 +44,7 @@ mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -Dartif
 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
 	-Dfile=/home/woodhamc/netty/resolver/target/netty-resolver-$NETTY_VERSION.jar
 
+
 # package and install transport
 echo ">>>>>>>>    Stage 5.1 - mvn package transport"
 mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl transport
@@ -52,7 +53,7 @@ mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -Dartif
 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
 	-Dfile=/home/woodhamc/netty/transport/target/netty-transport-$NETTY_VERSION.jar
 
-#### NOTE - NEED TO BUILD AND LOCALLY INSTALL INTO .m2 THE PORTED VERSION OF ZSTD-JNI
+# #### NOTE - NEED TO BUILD AND LOCALLY INSTALL INTO .m2 THE PORTED VERSION OF ZSTD-JNI
 
 # package and install codec
 # echo ">>>>>>>>    Stage 6.1 - mvn package codec"
