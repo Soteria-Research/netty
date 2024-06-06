@@ -879,7 +879,7 @@ public final class ByteBufUtil {
                 return;
             }
             if (buffer.hasMemoryAddress()) {
-                PlatformDependent.copyMemory(seq.array(), begin, buffer.memoryAddress().add(writerIndex), length);
+                PlatformDependent.copyMemory(seq.array(), begin, buffer.memoryAddress(), writerIndex, length);
                 return;
             }
         }
@@ -1119,7 +1119,7 @@ public final class ByteBufUtil {
                 PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (c & 0x3f)));
             }
         }
-        return (int) (writerAddress.add(writerOffset).getRawAddress() - oldWriterAddress.getRawAddress());
+        return (int) (writerAddress.getRawAddress() + writerOffset - oldWriterAddress.getRawAddress());
     }
 
     /**

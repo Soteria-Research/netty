@@ -109,7 +109,7 @@ static jint netty_unix_filedescriptor_open(JNIEnv* env, jclass clazz, jstring pa
 
 static jint netty_unix_filedescriptor_write(JNIEnv* env, jclass clazz, jint fd, jobject jbuffer, jint pos, jint limit) {
     // We check that GetDirectBufferAddress will not return NULL in OnLoad
-    return _write(env, clazz, fd, (*env)->GetDirectBufferMemoryAddressRawPointer(env, jbuffer), pos, limit);
+    return _write(env, clazz, fd, (*env)->GetDirectBufferMemoryAddress(env, jbuffer), pos, limit);
 }
 
 static jint netty_unix_filedescriptor_writeAddress(JNIEnv* env, jclass clazz, jint fd, jobject address, jint pos, jint limit) {

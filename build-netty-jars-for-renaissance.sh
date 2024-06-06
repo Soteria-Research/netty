@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # variables
-export SKIP_TESTS=""
-#export SKIP_TESTS="-DskipTests"
+export MAVEN_DEBUG_OPTS=""
+# export MAVEN_DEBUG_OPTS="-X -e"
+# export SKIP_TESTS=""
+export SKIP_TESTS="-DskipTests"
 #export SKIP_CHECKSTYLE=""
 export SKIP_CHECKSTYLE="-Dcheckstyle.skip=true"
 export JAVA_HOME="/home/woodhamc/template-aarch64-jdk17u/build/bsd-aarch64-template-aarch64-release/jdk"
@@ -10,14 +12,14 @@ export MAVEN_OPTS="-Xint -XX:-UseCompressedClassPointers -XX:-UseCompressedOops 
 export NETTY_VERSION="4.1.94.Final-SNAPSHOT"
 
 
-cd /home/woodhamc/netty
+# cd /home/woodhamc/netty
 echo ">>>>>>>>    Stage 1 - mvn clean"
 mvn clean
 
 
-# package and install netty-common
+# # package and install netty-common
 echo ">>>>>>>>    Stage 2.1 - mvn package common"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl common
+mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl common
 echo ">>>>>>>>    Stage 2.2 - mvn install and rename common"
 mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-common \
 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
@@ -27,7 +29,7 @@ mv /home/woodhamc/.m2/repository/io/netty/netty-common/$NETTY_VERSION /home/wood
 
 # package and install buffer
 echo ">>>>>>>>    Stage 3.1 - mvn package buffer"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl buffer
+mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl buffer
 echo ">>>>>>>>    Stage 3.2 - mvn install and rename buffer"
 mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-buffer \
 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
@@ -36,7 +38,7 @@ mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -Dartif
 
 # package and install resolver
 echo ">>>>>>>>    Stage 4.1 - mvn package resolver"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl resolver
+mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl resolver
 echo ">>>>>>>>    Stage 4.2 - mvn install and rename resolver"
 mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-resolver \
 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
@@ -44,7 +46,7 @@ mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -Dartif
 
 # package and install transport
 echo ">>>>>>>>    Stage 5.1 - mvn package transport"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl transport
+mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl transport
 echo ">>>>>>>>    Stage 5.2 - mvn install and rename transport"
 mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport \
 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
@@ -53,18 +55,18 @@ mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -Dartif
 #### NOTE - NEED TO BUILD AND LOCALLY INSTALL INTO .m2 THE PORTED VERSION OF ZSTD-JNI
 
 # package and install codec
-echo ">>>>>>>>    Stage 6.1 - mvn package codec"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl codec
-echo ">>>>>>>>    Stage 6.2 - mvn install and rename codec"
-mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-codec \
-	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
-	-Dfile=/home/woodhamc/netty/codec/target/netty-codec-$NETTY_VERSION.jar
+# echo ">>>>>>>>    Stage 6.1 - mvn package codec"
+# mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl codec
+# echo ">>>>>>>>    Stage 6.2 - mvn install and rename codec"
+# mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-codec \
+# 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
+# 	-Dfile=/home/woodhamc/netty/codec/target/netty-codec-$NETTY_VERSION.jar
 
 
 # package and install transport-native-unix-common
-echo ">>>>>>>>    Stage 6.1 - mvn package transport-native-unix-common"
-mvn package $SKIP_TESTS $SKIP_CHECKSTYLE -X -e -pl transport-native-unix-common
-echo ">>>>>>>>    Stage 6.2 - mvn install and rename transport-native-unix-common"
-mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport-native-unix-common \
-	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
-	-Dfile=/home/woodhamc/netty/transport-native-unix-common/target/netty-transport-native-unix-common-$NETTY_VERSION.jar
+# echo ">>>>>>>>    Stage 6.1 - mvn package transport-native-unix-common"
+# mvn package $SKIP_TESTS $SKIP_CHECKSTYLE $MAVEN_DEBUG_OPTS -pl transport-native-unix-common
+# echo ">>>>>>>>    Stage 6.2 - mvn install and rename transport-native-unix-common"
+# mvn install:install-file $SKIP_TESTS $SKIP_CHECKSTYLE -DgroupId=io.netty -DartifactId=netty-transport-native-unix-common \
+# 	-Dversion=$NETTY_VERSION-CHERI -Dpackaging=jar \
+# 	-Dfile=/home/woodhamc/netty/transport-native-unix-common/target/netty-transport-native-unix-common-$NETTY_VERSION.jar

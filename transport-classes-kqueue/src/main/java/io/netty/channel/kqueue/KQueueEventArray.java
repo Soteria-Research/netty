@@ -134,7 +134,7 @@ final class KQueueEventArray {
 
     private short getShort(int index, int offset) {
         if (PlatformDependent.hasUnsafe()) {
-            return PlatformDependent.getShort(getKEventOffsetAddress(index).add(offset));
+            return PlatformDependent.getShort(getKEventOffsetAddress(index), offset);
         }
         return memory.getShort(getKEventOffset(index) + offset);
     }
