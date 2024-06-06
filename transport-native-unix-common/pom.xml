@@ -610,17 +610,17 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-CHERI</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-CHERI</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>${project.version}</version>
+      <version>${project.version}-CHERI</version>
     </dependency>
   </dependencies>
 </project>

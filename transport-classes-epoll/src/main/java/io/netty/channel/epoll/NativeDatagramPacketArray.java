@@ -167,7 +167,7 @@ final class NativeDatagramPacketArray {
         // need to change these in the related .c file!
 
         // This is the actual struct iovec*
-        private long memoryAddress;
+        private MemoryAddress memoryAddress;
         private int count;
 
         private final byte[] senderAddr = new byte[16];
@@ -182,7 +182,7 @@ final class NativeDatagramPacketArray {
 
         private int segmentSize;
 
-        private void init(long memoryAddress, int count, int segmentSize, InetSocketAddress recipient) {
+        private void init(MemoryAddress memoryAddress, int count, int segmentSize, InetSocketAddress recipient) {
             this.memoryAddress = memoryAddress;
             this.count = count;
             this.segmentSize = segmentSize;

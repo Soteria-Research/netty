@@ -822,13 +822,13 @@ public class CompositeByteBuf extends AbstractReferenceCountedByteBuf implements
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         switch (componentCount) {
         case 0:
             return Unpooled.EMPTY_BUFFER.memoryAddress();
         case 1:
             Component c = components[0];
-            return c.buf.memoryAddress() + c.adjustment;
+            return c.buf.memoryAddress().add(c.adjustment);
         default:
             throw new UnsupportedOperationException();
         }

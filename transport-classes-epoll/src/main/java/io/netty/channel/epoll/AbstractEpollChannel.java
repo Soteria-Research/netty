@@ -385,7 +385,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
             throws IOException {
         assert !(fastOpen && remoteAddress == null) : "fastOpen requires a remote address";
         if (data.hasMemoryAddress()) {
-            long memoryAddress = data.memoryAddress();
+            MemoryAddress memoryAddress = data.memoryAddress();
             if (remoteAddress == null) {
                 return socket.sendAddress(memoryAddress, data.readerIndex(), data.writerIndex());
             }

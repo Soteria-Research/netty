@@ -41,7 +41,7 @@ final class PooledUnsafeDirectByteBuf extends PooledByteBuf<ByteBuffer> {
         return buf;
     }
 
-    private long memoryAddress;
+    private MemoryAddress memoryAddress;
 
     private PooledUnsafeDirectByteBuf(Handle<PooledUnsafeDirectByteBuf> recyclerHandle, int maxCapacity) {
         super(recyclerHandle, maxCapacity);
@@ -61,7 +61,7 @@ final class PooledUnsafeDirectByteBuf extends PooledByteBuf<ByteBuffer> {
     }
 
     private void initMemoryAddress() {
-        memoryAddress = PlatformDependent.directBufferAddress(memory) + offset;
+        memoryAddress = PlatformDependent.directBufferAddress(memory).add(offset);
     }
 
     @Override
@@ -237,13 +237,13 @@ final class PooledUnsafeDirectByteBuf extends PooledByteBuf<ByteBuffer> {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         ensureAccessible();
         return memoryAddress;
     }
 
-    private long addr(int index) {
-        return memoryAddress + index;
+    private MemoryAddress addr(int index) {
+        return memoryAddress.add(index);
     }
 
     @Override

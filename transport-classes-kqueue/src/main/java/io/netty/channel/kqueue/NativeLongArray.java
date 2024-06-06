@@ -25,7 +25,7 @@ import static io.netty.util.internal.ObjectUtil.checkPositive;
 
 final class NativeLongArray {
     private ByteBuffer memory;
-    private long memoryAddress;
+    private MemoryAddress memoryAddress;
     private int capacity;
     private int size;
 
@@ -70,7 +70,7 @@ final class NativeLongArray {
         memoryAddress = 0;
     }
 
-    long memoryAddress() {
+    MemoryAddress memoryAddress() {
         return memoryAddress;
     }
 
@@ -78,8 +78,8 @@ final class NativeLongArray {
         return memoryOffset(size);
     }
 
-    private long memoryOffset(int index) {
-        return memoryAddress + idx(index);
+    private MemoryAddress memoryOffset(int index) {
+        return memoryAddress.add(idx(index));
     }
 
     private void reallocIfNeeded() {

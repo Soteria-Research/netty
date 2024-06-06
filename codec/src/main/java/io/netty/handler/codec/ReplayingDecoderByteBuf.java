@@ -126,7 +126,7 @@ final class ReplayingDecoderByteBuf extends ByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         throw new UnsupportedOperationException();
     }
 

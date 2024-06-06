@@ -70,7 +70,7 @@ final class PooledDuplicatedByteBuf extends AbstractPooledDerivedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         return unwrap().memoryAddress();
     }
 

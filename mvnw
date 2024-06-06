@@ -220,7 +220,10 @@ fi
 
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
-exec "$JAVACMD" \
+JAVACMD="/home/woodhamc/template-aarch64-jdk17u/build/bsd-aarch64-template-aarch64-release/jdk/bin/java"
+
+exec $JAVACMD \
+  -XX:-UseCompressedClassPointers -XX:-UseCompressedOops -Xint -Xms1G -Xmx1G\
   $MAVEN_OPTS \
   -classpath "$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.jar" \
   "-Dmaven.home=${M2_HOME}" "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \

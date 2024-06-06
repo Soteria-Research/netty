@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import jdk.internal.vm.memory.MemoryAddress;
 
 /**
  * A NIO {@link ByteBuffer} based buffer. It is recommended to use

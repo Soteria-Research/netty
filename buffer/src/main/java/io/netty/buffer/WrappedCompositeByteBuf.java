@@ -617,7 +617,7 @@ class WrappedCompositeByteBuf extends CompositeByteBuf {
     }
 
     @Override
-    public final long memoryAddress() {
+    public final MemoryAddress memoryAddress() {
         return wrapped.memoryAddress();
     }
 

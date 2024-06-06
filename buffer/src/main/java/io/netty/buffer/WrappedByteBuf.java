@@ -56,7 +56,7 @@ class WrappedByteBuf extends ByteBuf {
     }
 
     @Override
-    public final long memoryAddress() {
+    public final MemoryAddress memoryAddress() {
         return buf.memoryAddress();
     }
 

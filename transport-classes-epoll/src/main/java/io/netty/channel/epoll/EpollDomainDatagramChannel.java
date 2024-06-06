@@ -175,7 +175,7 @@ public final class EpollDomainDatagramChannel extends AbstractEpollChannel imple
 
         final long writtenBytes;
         if (data.hasMemoryAddress()) {
-            long memoryAddress = data.memoryAddress();
+            MemoryAddress memoryAddress = data.memoryAddress();
             if (remoteAddress == null) {
                 writtenBytes = socket.sendAddress(memoryAddress, data.readerIndex(), data.writerIndex());
             } else {

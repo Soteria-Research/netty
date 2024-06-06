@@ -2384,7 +2384,7 @@ public abstract class ByteBuf implements ReferenceCounted, Comparable<ByteBuf>, 
      * @throws UnsupportedOperationException
      *         if this buffer does not support accessing the low-level memory address
      */
-    public abstract long memoryAddress();
+    public abstract MemoryAddress memoryAddress();
 
     /**
      * Returns {@code true} if this {@link ByteBuf} implementation is backed by a single memory region.

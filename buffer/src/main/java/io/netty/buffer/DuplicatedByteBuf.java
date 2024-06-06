@@ -111,7 +111,7 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         return unwrap().memoryAddress();
     }
 

@@ -79,15 +79,15 @@ public class PooledByteBufAllocatorAlignBenchmark extends
         pooledDirectBuffer = pooledAllocator.directBuffer(size + 64);
         sizeMask = size - 1;
         if (cacheAlign == 0) {
-            long addr = pooledDirectBuffer.memoryAddress();
+            MemoryAddress addr = pooledDirectBuffer.memoryAddress();
             // make sure address is miss-aligned
-            if (addr % 64 == 0) {
+            if (!MemoryAddress.isNull(addr) && addr.getRawAddress() % 64 == 0) {
                 alignOffset = 63;
             }
             int off = 0;
             for (int c = 0; c < size; c++) {
                 off = (off + OFFSET_ADD) & sizeMask;
-                if ((addr + off + alignOffset) % BLOCK == 0) {
+                if ((addr.getRawAddress() + off + alignOffset) % BLOCK == 0) {
                     throw new IllegalStateException(
                             "Misaligned address is not really aligned");
                 }
@@ -95,13 +95,17 @@ public class PooledByteBufAllocatorAlignBenchmark extends
         } else {
             alignOffset = 0;
             int off = 0;
-            long addr = pooledDirectBuffer.memoryAddress();
-            for (int c = 0; c < size; c++) {
-                off = (off + OFFSET_ADD) & sizeMask;
-                if ((addr + off) % BLOCK != 0) {
-                    throw new IllegalStateException(
-                            "Aligned address is not really aligned");
+            MemoryAddress addr = pooledDirectBuffer.memoryAddress();
+            if (!MemoryAddress.isNull(addr)) {
+                for (int c = 0; c < size; c++) {
+                    off = (off + OFFSET_ADD) & sizeMask;
+                    if ((addr.getRawAddress() + off) % BLOCK != 0) {
+                        throw new IllegalStateException(
+                                "Aligned address is not really aligned");
+                    }
                 }
+            } else {
+                throw new IllegalStateException("The MemoryAddress of pooledDirectBuffer is null");
             }
         }
         bytes = new byte[BLOCK];

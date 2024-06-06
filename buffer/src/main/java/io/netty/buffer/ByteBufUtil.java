@@ -852,7 +852,7 @@ public final class ByteBufUtil {
                                        buffer.arrayOffset() + writerIndex, seq, start, end);
             }
             if (buffer.hasMemoryAddress()) {
-                return unsafeWriteUtf8(null, buffer.memoryAddress(), writerIndex, seq, start, end);
+                return unsafeWriteUtf8_MemoryAddress(buffer.memoryAddress(), writerIndex, seq, start, end);
             }
         } else {
             if (buffer.hasArray()) {
@@ -879,7 +879,7 @@ public final class ByteBufUtil {
                 return;
             }
             if (buffer.hasMemoryAddress()) {
-                PlatformDependent.copyMemory(seq.array(), begin, buffer.memoryAddress() + writerIndex, length);
+                PlatformDependent.copyMemory(seq.array(), begin, buffer.memoryAddress(), writerIndex, length);
                 return;
             }
         }
@@ -1027,7 +1027,7 @@ public final class ByteBufUtil {
         return writerIndex - oldWriterIndex;
     }
 
-    // unsafe Fast-Path implementation
+    // unsafe Fast-Path implementation - for buffer + (long) offset
     private static int unsafeWriteUtf8(byte[] buffer, long memoryOffset, int writerIndex,
                                        CharSequence seq, int start, int end) {
         assert !(seq instanceof AsciiString);
@@ -1072,6 +1072,54 @@ public final class ByteBufUtil {
             }
         }
         return (int) (writerOffset - oldWriterOffset);
+    }
+
+    // unsafe Fast-Path implementation - for (MemoryAddress) address only 
+    private static int unsafeWriteUtf8_MemoryAddress(MemoryAddress address, int writerIndex,
+                                       CharSequence seq, int start, int end) {
+        assert !(seq instanceof AsciiString);
+        MemoryAddress writerAddress = address.add(writerIndex);
+        long writerOffset = 0;
+        final MemoryAddress oldWriterAddress = writerAddress;
+        for (int i = start; i < end; i++) {
+            char c = seq.charAt(i);
+            if (c < 0x80) {
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) c);
+            } else if (c < 0x800) {
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0xc0 | (c >> 6)));
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (c & 0x3f)));
+            } else if (isSurrogate(c)) {
+                if (!Character.isHighSurrogate(c)) {
+                    PlatformDependent.putByte(writerAddress, writerOffset++, WRITE_UTF_UNKNOWN);
+                    continue;
+                }
+                // Surrogate Pair consumes 2 characters.
+                if (++i == end) {
+                    PlatformDependent.putByte(writerAddress, writerOffset++, WRITE_UTF_UNKNOWN);
+                    break;
+                }
+                char c2 = seq.charAt(i);
+                // Extra method is copied here to NOT allow inlining of writeUtf8
+                // and increase the chance to inline CharSequence::charAt instead
+                if (!Character.isLowSurrogate(c2)) {
+                    PlatformDependent.putByte(writerAddress, writerOffset++, WRITE_UTF_UNKNOWN);
+                    PlatformDependent.putByte(writerAddress, writerOffset++,
+                                              (byte) (Character.isHighSurrogate(c2)? WRITE_UTF_UNKNOWN : c2));
+                } else {
+                    int codePoint = Character.toCodePoint(c, c2);
+                    // See https://www.unicode.org/versions/Unicode7.0.0/ch03.pdf#G2630.
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0xf0 | (codePoint >> 18)));
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | ((codePoint >> 12) & 0x3f)));
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | ((codePoint >> 6) & 0x3f)));
+                    PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (codePoint & 0x3f)));
+                }
+            } else {
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0xe0 | (c >> 12)));
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | ((c >> 6) & 0x3f)));
+                PlatformDependent.putByte(writerAddress, writerOffset++, (byte) (0x80 | (c & 0x3f)));
+            }
+        }
+        return (int) ((writerAddress.getRawAddress() + writerOffset) - oldWriterAddress.getRawAddress());
     }
 
     /**

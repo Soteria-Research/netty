@@ -648,7 +648,7 @@ final class FixedCompositeByteBuf extends AbstractReferenceCountedByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         switch (buffers.length) {
             case 0:
                 return Unpooled.EMPTY_BUFFER.memoryAddress();

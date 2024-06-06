@@ -84,7 +84,11 @@ public class EmptyByteBufTest {
     public void testMemoryAddress() {
         EmptyByteBuf empty = new EmptyByteBuf(UnpooledByteBufAllocator.DEFAULT);
         if (empty.hasMemoryAddress()) {
-            assertThat(empty.memoryAddress(), is(not(0L)));
+            if (empty.memoryAddress() != null) {
+                assertThat(empty.memoryAddress().getRawAddress(), is(not(0L)));
+            } else {
+                fail("EmptyByteBufTest.testMemoryAddress - the MemoryAddress object is null");
+            }
         } else {
             try {
                 empty.memoryAddress();

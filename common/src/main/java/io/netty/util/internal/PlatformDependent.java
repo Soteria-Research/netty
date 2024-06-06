@@ -547,28 +547,44 @@ public final class PlatformDependent {
         PlatformDependent0.safeConstructPutInt(object, fieldOffset, value);
     }
 
-    public static int getIntVolatile(long address) {
+    public static int getIntVolatile(MemoryAddress address) {
         return PlatformDependent0.getIntVolatile(address);
     }
 
-    public static void putIntOrdered(long adddress, int newValue) {
-        PlatformDependent0.putIntOrdered(adddress, newValue);
+    public static void putIntOrdered(MemoryAddress address, int newValue) {
+        PlatformDependent0.putIntOrdered(address, newValue);
     }
 
     public static byte getByte(MemoryAddress address) {
         return PlatformDependent0.getByte(address);
     }
 
+    public static byte getByte(MemoryAddress address, int offset) {
+        return PlatformDependent0.getByte(address, offset);
+    }
+
     public static short getShort(MemoryAddress address) {
         return PlatformDependent0.getShort(address);
+    }
+
+    public static short getShort(MemoryAddress address, int offset) {
+        return PlatformDependent0.getShort(address, offset);
     }
 
     public static int getInt(MemoryAddress address) {
         return PlatformDependent0.getInt(address);
     }
 
+    public static int getInt(MemoryAddress address, int offset) {
+        return PlatformDependent0.getInt(address, offset);
+    }
+
     public static long getLong(MemoryAddress address) {
         return PlatformDependent0.getLong(address);
+    }
+
+    public static long getLong(MemoryAddress address, int offset) {
+        return PlatformDependent0.getLong(address, offset);
     }
 
     public static byte getByte(byte[] data, int index) {
@@ -695,20 +711,36 @@ public final class PlatformDependent {
         return value & 0x1f;
     }
 
-    public static void putByte(long address, byte value) {
+    public static void putByte(MemoryAddress address, byte value) {
         PlatformDependent0.putByte(address, value);
     }
 
-    public static void putShort(long address, short value) {
+    public static void putByte(MemoryAddress address, int offset, byte value) {
+        PlatformDependent0.putByte(address, offset, value);
+    }
+
+    public static void putShort(MemoryAddress address, short value) {
         PlatformDependent0.putShort(address, value);
     }
 
-    public static void putInt(long address, int value) {
+    public static void putShort(MemoryAddress address, int offset, short value) {
+        PlatformDependent0.putShort(address, offset, value);
+    }
+
+    public static void putInt(MemoryAddress address, int value) {
         PlatformDependent0.putInt(address, value);
     }
 
-    public static void putLong(long address, long value) {
+    public static void putInt(MemoryAddress address, int offset, int value) {
+        PlatformDependent0.putInt(address, offset, value);
+    }
+
+    public static void putLong(MemoryAddress address, long value) {
         PlatformDependent0.putLong(address, value);
+    }
+
+    public static void putLong(MemoryAddress address, int offset, long value) {
+        PlatformDependent0.putLong(address, offset, value);
     }
 
     public static void putByte(byte[] data, int index, byte value) {
@@ -744,8 +776,32 @@ public final class PlatformDependent {
                                       dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
     }
 
+    public static void copyMemory(byte[] src, int srcIndex, MemoryAddress dstAddr, long length) {
+        PlatformDependent0.copyMemory(src, BYTE_ARRAY_BASE_OFFSET + srcIndex, dstAddr, 0, length);
+    }
+
+    public static void copyMemory(byte[] src, int srcIndex, MemoryAddress dstAddr, long dstOffset, long length) {
+        PlatformDependent0.copyMemory(src, BYTE_ARRAY_BASE_OFFSET + srcIndex, dstAddr, dstOffset, length);
+    }
+
+    public static void copyMemory(MemoryAddress srcAddr, byte[] dst, int dstIndex, long length) {
+        PlatformDependent0.copyMemory(srcAddr, 0, dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
+    }
+
+    public static void copyMemory(MemoryAddress srcAddr, long srcOffset, byte[] dst, int dstIndex, long length) {
+        PlatformDependent0.copyMemory(srcAddr, srcOffset, dst, BYTE_ARRAY_BASE_OFFSET + dstIndex, length);
+    }
+
     public static void copyMemory(MemoryAddress src, MemoryAddress dst, long length) {
         PlatformDependent0.copyMemory(src, 0, dst, 0, length);
+    }
+
+    public static void copyMemory(MemoryAddress src, MemoryAddress dst, long dstOffset, long length) {
+        PlatformDependent0.copyMemory(src, 0, dst, dstOffset, length);
+    }
+
+    public static void copyMemory(MemoryAddress src, long srcOffset, MemoryAddress dst, long dstOffset, long length) {
+        PlatformDependent0.copyMemory(src, srcOffset, dst, dstOffset, length);
     }
 
     public static void setMemory(byte[] dst, int dstIndex, long bytes, byte value) {
@@ -815,9 +871,9 @@ public final class PlatformDependent {
             return PlatformDependent0.alignSlice(buffer, alignment);
         }
         if (hasUnsafe()) {
-            long address = directBufferAddress(buffer);
-            long aligned = align(address, alignment);
-            buffer.position((int) (aligned - address));
+            MemoryAddress address = directBufferAddress(buffer);
+            long aligned = align(address.getRawAddress(), alignment);
+            buffer.position((int) (aligned - address.getRawAddress()));
             return buffer.slice();
         }
         // We don't have enough information to be able to align any buffers.

@@ -58,7 +58,7 @@ public abstract class IovArrayTest {
         }
 
         @Override
-        public long memoryAddress() {
+        public MemoryAddress memoryAddress() {
             throw new UnsupportedOperationException();
         }
     }

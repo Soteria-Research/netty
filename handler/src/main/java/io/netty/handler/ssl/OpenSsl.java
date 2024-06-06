@@ -671,7 +671,7 @@ public final class OpenSsl {
         return USE_KEYMANAGER_FACTORY;
     }
 
-    static long memoryAddress(ByteBuf buf) {
+    static MemoryAddress memoryAddress(ByteBuf buf) {
         assert buf.isDirect();
         return buf.hasMemoryAddress() ? buf.memoryAddress() :
                 // Use internalNioBuffer to reduce object creation.

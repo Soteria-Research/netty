@@ -983,7 +983,7 @@ public class SwappedByteBuf extends ByteBuf {
     }
 
     @Override
-    public long memoryAddress() {
+    public MemoryAddress memoryAddress() {
         return buf.memoryAddress();
     }
 
