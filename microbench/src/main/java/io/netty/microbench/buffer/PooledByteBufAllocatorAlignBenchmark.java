@@ -87,7 +87,7 @@ public class PooledByteBufAllocatorAlignBenchmark extends
             int off = 0;
             for (int c = 0; c < size; c++) {
                 off = (off + OFFSET_ADD) & sizeMask;
-                if ((addr.add(off + alignOffset).getRawAddress()) % BLOCK == 0) {
+                if ((addr.getRawAddress() + off + alignOffset) % BLOCK == 0) {
                     throw new IllegalStateException(
                             "Misaligned address is not really aligned");
                 }
@@ -99,7 +99,7 @@ public class PooledByteBufAllocatorAlignBenchmark extends
             if (!MemoryAddress.isNull(addr)) {
                 for (int c = 0; c < size; c++) {
                     off = (off + OFFSET_ADD) & sizeMask;
-                    if (addr.add(off).getRawAddress() % BLOCK != 0) {
+                    if ((addr.getRawAddress() + off) % BLOCK != 0) {
                         throw new IllegalStateException(
                                 "Aligned address is not really aligned");
                     }

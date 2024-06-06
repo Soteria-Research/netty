@@ -796,8 +796,8 @@ public final class PlatformDependent {
         PlatformDependent0.copyMemory(src, 0, dst, 0, length);
     }
 
-    public static void copyMemory(MemoryAddress src, long srcOffset, MemoryAddress dst, long length) {
-        PlatformDependent0.copyMemory(src, srcOffset, dst, 0, length);
+    public static void copyMemory(MemoryAddress src, MemoryAddress dst, long dstOffset, long length) {
+        PlatformDependent0.copyMemory(src, 0, dst, dstOffset, length);
     }
 
     public static void copyMemory(MemoryAddress src, long srcOffset, MemoryAddress dst, long dstOffset, long length) {

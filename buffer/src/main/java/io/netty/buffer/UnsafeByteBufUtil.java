@@ -612,6 +612,7 @@ final class UnsafeByteBufUtil {
             throws IOException {
         long inAddrOffset = 0;
         do {
+            int inAddrOffset = 0;
             int len = Math.min(inLen, outLen);
             PlatformDependent.copyMemory(inAddr, inAddrOffset, in, inOffset, len);
             out.write(in, inOffset, len);

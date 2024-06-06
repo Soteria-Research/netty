@@ -69,7 +69,7 @@ final class ReadOnlyUnsafeDirectByteBuf extends ReadOnlyByteBufferBuf {
         }
 
         if (dst.hasMemoryAddress()) {
-            PlatformDependent.copyMemory(addr(index), dst.memoryAddress().add(dstIndex), length);
+            PlatformDependent.copyMemory(addr(index), dst.memoryAddress(), dstIndex, length);
         } else if (dst.hasArray()) {
             PlatformDependent.copyMemory(addr(index), dst.array(), dst.arrayOffset() + dstIndex, length);
         } else {
