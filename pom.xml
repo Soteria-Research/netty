@@ -345,11 +345,26 @@
         <jetty.alpnAgent.option>forceNpn=true</jetty.alpnAgent.option>
       </properties>
     </profile>
+    <profile>
+      <id>github-netty</id>
+      <repositories>
+        <repository>
+          <id>github-netty</id>
+          <url>https://maven.pkg.github.com/${repository-owner}/${repository-name}</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
   </profiles>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <repository-owner>soteria-research</repository-owner>
+    <repository-name>netty</repository-name>
+    <branch-name>cheri-4.1</branch-name>
     <netty.dev.tools.directory>${project.build.directory}/dev-tools</netty.dev.tools.directory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -402,6 +417,14 @@
     <skipShadingTestsuite>false</skipShadingTestsuite>
     <skipDeploy>false</skipDeploy>
   </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>github-netty</id>
+      <name>github-netty</name>
+      <url>https://maven.pkg.github.com/${repository-owner}/${repository-name}</url>
+    </repository>
+  </distributionManagement>
 
   <modules>
     <module>all</module>
@@ -1760,7 +1783,7 @@
           <version>1.5</version>
           <configuration>
             <resourceBundles>
-              <resourceBundle>io.netty:netty-dev-tools:${project.version}</resourceBundle>
+              <resourceBundle>io.netty:netty-dev-tools:4.1.94.Final-SNAPSHOT</resourceBundle>
             </resourceBundles>
             <outputDirectory>${netty.dev.tools.directory}</outputDirectory>
             <!-- don't include netty-dev-tools in artifacts -->
